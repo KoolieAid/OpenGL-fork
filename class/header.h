@@ -1,3 +1,14 @@
+/*
+	Final Project
+	Group: 12
+
+	Members: Castro, Steven Jentyn
+			 Desembrana, Anna Patricia Bernardino
+			 Mandadero, Clarissa Mae Suavengco
+
+	Section: S13
+*/
+
 #include <string>
 #include <iostream>
 using namespace std;
@@ -92,12 +103,18 @@ class Bunny : public MyObject
 		}
 
 		// Draw
-		void draw(GLuint shaderProgram)
+		void draw(GLuint shaderProgram, GLuint VAO)
 		{
+			// Shader Program
+			glUseProgram(shaderProgram);
+
 			// Create Transformation Matrix
 			mat4 transformation = transform();
 			unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
 			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
+			
+			// Bind
+			glBindVertexArray(VAO);
 
 			// Draw
 			glDrawArrays(GL_TRIANGLES, 0, fullVertexData.size() / 3);
@@ -110,7 +127,6 @@ class Player : public MyObject
 };
 
 // Skybox Model Object Class
-// Reference: https://www.youtube.com/watch?v=8sVvxeKI9Pk
 class SkyBox
 {
 

@@ -81,10 +81,18 @@ int main(void)
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
 
-    ShaderManager shaderManager = ShaderManager();
-    shaderManager.addVertexShader("Shaders/sample.vert");
-    shaderManager.addFragmentShader("Shaders/sample.frag");
-    shaderManager.link();
+    ShaderManager SMBunnyA = ShaderManager();
+    SMBunnyA.addVertexShader("Shaders/sample.vert");
+    SMBunnyA.addFragmentShader("Shaders/sample.frag");
+    SMBunnyA.link();
+
+    ShaderManager SMBunnyB = ShaderManager();
+    SMBunnyB.addVertexShader("Shaders/sample.vert");
+    SMBunnyB.addFragmentShader("Shaders/sample2.frag");
+    SMBunnyB.link();
+
+    // Sky Box // // // // // // // // // // // // // // // // // // // // // // // //
+    SkyBox skybox = SkyBox();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -97,16 +105,10 @@ int main(void)
         object2.rotation.y = object.rotation.y + 0.5;
         object3.rotation.y = object.rotation.y - 0.5;
 
-        // Shaders
-        glUseProgram(shaderManager.shaderProgram);
-
-        // Bind VAO
-        glBindVertexArray(BunnyVAO);
-
-        // Draw
-        object.draw(shaderManager.shaderProgram);
-        object2.draw(shaderManager.shaderProgram);
-        object3.draw(shaderManager.shaderProgram);
+        // Draw 
+        object.draw(SMBunnyA.shaderProgram, BunnyVAO);
+        object2.draw(SMBunnyB.shaderProgram, BunnyVAO);
+        object3.draw(SMBunnyA.shaderProgram, BunnyVAO);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
