@@ -32,32 +32,61 @@ vec3 rz = normalize(glm::vec3(0, 0, 1));
 class MyObject 
 {
 	public:
-		// Position
+		// Position, Scale, Rotation (thetas)
 		vec3 position = vec3(0.0f, 0.0f, 0.0f);
-
-		// Scale
 		vec3 scale = vec3(1.0f, 1.0f, 1.0f);
-
-		// Rotation (theta)
 		vec3 rotation = vec3(0.0f, 0.0f, 0.0f);
 
-		// Vertex/Normal/Texture Data
-		vector<GLfloat> fullVertexData;
+		// Constructors
+		MyObject() {}
 
-		// Constructor
-		MyObject(vec3 nposition, float nscale, vec3 nrotation)
+		MyObject(vec3 nposition, vec3 nscale, vec3 nrotation)
 		{
 			position = nposition;
-			scale = vec3(nscale, nscale, nscale);
+			scale = nscale;
 			rotation = nrotation;
 		}
 
+		// Setup VAO & VBO Buffers
+		GLuint setBuffers(vector<GLfloat> fullVertexData)
+		{
+			// Setup Vertex Array Object
+			GLuint VAO;
+			glGenVertexArrays(1, &VAO);
+			glBindVertexArray(VAO);
+
+			// Setup Vertex Buffer Object
+			GLuint VBO;
+			glGenBuffers(1, &VBO);
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * fullVertexData.size(), fullVertexData.data(), GL_STATIC_DRAW);
+
+			return VAO;
+		}
+
+		// Virtual Functions
+
+		// Load Vertex Data 
+		virtual vector<GLfloat> loadVertexData()
+		{
+			cout << "Load Vertex Data function is not defined!";
+			vector<GLfloat> temp;
+			return temp;
+		}
+
+		// Setup Attrib Pointers 
+		virtual void setAttribPointer()
+		{
+			cout << "Set Attrib Pointers function is not defined!";
+		}
+
 		// Draw
-		void draw() 
+		virtual void draw() 
 		{
 			cout << "Draw function is not defined!";
 		}
 
+	protected:
 		// Create Transformation Matrix
 		mat4 transform() 
 		{
@@ -67,7 +96,6 @@ class MyObject
 			transformation = rotate(transformation, radians(rotation.x), rx);
 			transformation = rotate(transformation, radians(rotation.y), ry);
 			transformation = rotate(transformation, radians(rotation.z), rz);
-
 			return transformation;
 		}
 };
@@ -79,18 +107,24 @@ class Bunny : public MyObject
 		// Path
 		string path = "3D/bunny.obj";
 
-		// Constructor (Inherits MyObject)
-		Bunny(vec3 nposition, float nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) 
+		// Constructors (Inherits MyObject
+		Bunny() {}
+
+		Bunny(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
+
+		// Load Vertex Data
+		vector<GLfloat> loadVertexData()
 		{
-			// Initialize other loader variables
+			// Loader variables
 			vector<tinyobj::shape_t> shapes;
 			vector<tinyobj::material_t> materials;
 			string warning, error;
 			tinyobj::attrib_t attributes;
-
+	
 			// Load the obj file
 			bool success = tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, path.c_str());
 
+			vector<GLfloat> fullVertexData;
 			for (int i = 0; i < shapes[0].mesh.indices.size(); i++) {
 				tinyobj::index_t vData = shapes[0].mesh.indices[i];
 				int vertexIndex = vData.vertex_index * 3;
@@ -100,10 +134,19 @@ class Bunny : public MyObject
 				fullVertexData.push_back(attributes.vertices[vertexIndex + 1]);
 				fullVertexData.push_back(attributes.vertices[vertexIndex + 2]);
 			}
+
+			return fullVertexData;
+		}
+
+		// Setup Attrib Pointers
+		void setAttribPointer()
+		{
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
+			glEnableVertexAttribArray(0);
 		}
 
 		// Draw
-		void draw(GLuint shaderProgram, GLuint VAO)
+		void draw(GLuint shaderProgram, vector<GLfloat> fullVertexData, GLuint VAO)
 		{
 			// Shader Program
 			glUseProgram(shaderProgram);
@@ -123,12 +166,28 @@ class Bunny : public MyObject
 
 class Player : public MyObject
 {
+	/*
+		The Player ship can be controlled using WASDQE
+		- W / S – Forward / Back
+		- A / D – Turn Left / Right
+		- Q / E – Ascend / Descend
 
+		- Sub can only be controlled when in 1st / 3rd Person view
+		- Sub cannot go above 0 in the Y axis
+		-  Print out the current depth the sub is in the console window using cout
+	*/
 };
 
-// Skybox Model Object Class
-class SkyBox
+class SkyBox : public MyObject
 {
+public:
+	// Path
+	string path = "3D/skybox.obj";
+
+	// Constructors (Inherits MyObject)
+	SkyBox() {}
+
+	SkyBox(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
 
 };
 
@@ -190,10 +249,39 @@ class ShaderManager
 
 class LightManager
 {
-
+	/*
+		The game should feature the following lighting :
+		- Point Light that illuminates the front of the player sub.
+		- Direction Light coming from the top of the ocean down
+		- You can cycle through the intensity of the Point light using the F key (Low, Medium, High)
+	*/
 };
 
 class CameraManager 
 {
+	// Position
+	vec3 position = vec3(0.0f, 0.0f, 0.0f);
 
+	// Constructors
+	CameraManager() {}
+
+	CameraManager(vec3 nposition)
+	{
+		position = nposition;
+	}
+
+	/*
+		The game should feature the following Camera’s
+		- 3rd Person Perspective Camera on the Player’s ship
+		- The view can be controlled by using the mouse, You cannot see as far in this view
+		- First Person Perspective Camera, You can see much further in this view, Cannot be controlled by the mouse
+		- You can only see objects in a single shade of color in this view (Similar to Sonar)
+
+		Orthographic Top / Birds-eye View Camera overlooking the whole area by default
+		- You cannot move the ship in this view
+		- You can pan the camera around using WASD
+
+		- You can swap 1st / 3rd Person Views using the number 1 key.
+		- You can enter Top / Birds-eye view using the number 2 key.
+	*/
 };

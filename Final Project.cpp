@@ -1,7 +1,12 @@
 /*
+    Final Project
+    Group: 12
 
-    Testing Grounds for OpenGL Code
+    Members: Castro, Steven Jentyn
+             Desembrana, Anna Patricia Bernardino
+             Mandadero, Clarissa Mae Suavengco
 
+    Section: S13
 */
 
 #include <string>
@@ -53,28 +58,15 @@ int main(void)
 
     // Load Object Models // // // // // // // // // // // // // // // // // // // // // // // //
 
-    Bunny object = Bunny(vec3(-0.5f, 0.0f, 0.0f), 1.0f, vec3(0.0f, 45.0f, 2.0f));
-    Bunny object2 = Bunny(vec3(0.0f, 0.0f, 0.0f), 1.0f, vec3(0.0f, 90.0f, 2.0f));
-    Bunny object3 = Bunny(vec3(0.5f, 0.0f, 0.0f), 1.0f, vec3(0.0f, 135.0f, 2.0f));
+    Bunny bunny1 = Bunny(vec3(-0.5f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 45.0f, 2.0f));
+    Bunny bunny2 = Bunny(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 90.0f, 2.0f));
+    Bunny bunny3 = Bunny(vec3(0.5f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 135.0f, 2.0f));
 
     // Create Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
-    // Setup Vertex Array Object
-    GLuint BunnyVAO;
-    glGenVertexArrays(1, &BunnyVAO);
-    glBindVertexArray(BunnyVAO);
-
-    // Setup Vertex Buffer Object
-    GLuint BunnyVBO;
-    glGenBuffers(1, &BunnyVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, BunnyVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * object.fullVertexData.size(), object.fullVertexData.data(), GL_STATIC_DRAW);
-
-    // Create Attrib Pointers // // // // // // // // // // // // // // // // // // // // // // // //
-
-    // X Y Z
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
-    glEnableVertexAttribArray(0);
+    vector<GLfloat> bunnyVertexData = bunny1.loadVertexData();
+    GLuint BunnyVAO = bunny1.setBuffers(bunnyVertexData);
+    bunny1.setAttribPointer();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -91,9 +83,6 @@ int main(void)
     SMBunnyB.addFragmentShader("Shaders/sample2.frag");
     SMBunnyB.link();
 
-    // Sky Box // // // // // // // // // // // // // // // // // // // // // // // //
-    SkyBox skybox = SkyBox();
-
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -101,14 +90,14 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Update Object Properties
-        object.rotation.y = object.rotation.y - 0.5;
-        object2.rotation.y = object.rotation.y + 0.5;
-        object3.rotation.y = object.rotation.y - 0.5;
+        bunny1.rotation.y = bunny1.rotation.y - 0.5;
+        bunny2.rotation.y = bunny1.rotation.y + 0.5;
+        bunny3.rotation.y = bunny1.rotation.y - 0.5;
 
         // Draw 
-        object.draw(SMBunnyA.shaderProgram, BunnyVAO);
-        object2.draw(SMBunnyB.shaderProgram, BunnyVAO);
-        object3.draw(SMBunnyA.shaderProgram, BunnyVAO);
+        bunny1.draw(SMBunnyA.shaderProgram, bunnyVertexData, BunnyVAO);
+        bunny2.draw(SMBunnyB.shaderProgram, bunnyVertexData, BunnyVAO);
+        bunny3.draw(SMBunnyA.shaderProgram, bunnyVertexData, BunnyVAO);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
