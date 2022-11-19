@@ -65,23 +65,15 @@ int main(void)
     // Create Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
     vector<GLfloat> bunnyVertexData = bunny1.loadVertexData();
-    GLuint BunnyVAO = bunny1.setBuffers(bunnyVertexData);
+    GLuint BunnyVAO = setBuffers(bunnyVertexData);
     bunny1.setAttribPointer();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
-
-    ShaderManager SMBunnyA = ShaderManager();
-    SMBunnyA.addVertexShader("Shaders/sample.vert");
-    SMBunnyA.addFragmentShader("Shaders/sample.frag");
-    SMBunnyA.link();
-
-    ShaderManager SMBunnyB = ShaderManager();
-    SMBunnyB.addVertexShader("Shaders/sample.vert");
-    SMBunnyB.addFragmentShader("Shaders/sample2.frag");
-    SMBunnyB.link();
+    MyShader SMBunnyA = MyShader("Shaders/sample.vert", "Shaders/sample.frag");
+    MyShader SMBunnyB = MyShader("Shaders/sample.vert", "Shaders/sample2.frag");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -91,13 +83,13 @@ int main(void)
 
         // Update Object Properties
         bunny1.rotation.y = bunny1.rotation.y - 0.5;
-        bunny2.rotation.y = bunny1.rotation.y + 0.5;
-        bunny3.rotation.y = bunny1.rotation.y - 0.5;
+        bunny2.rotation.y = bunny2.rotation.y + 0.5;
+        bunny3.rotation.y = bunny3.rotation.y - 0.5;
 
         // Draw 
-        bunny1.draw(SMBunnyA.shaderProgram, bunnyVertexData, BunnyVAO);
-        bunny2.draw(SMBunnyB.shaderProgram, bunnyVertexData, BunnyVAO);
-        bunny3.draw(SMBunnyA.shaderProgram, bunnyVertexData, BunnyVAO);
+        bunny1.draw(SMBunnyA, bunnyVertexData, BunnyVAO);
+        bunny2.draw(SMBunnyB, bunnyVertexData, BunnyVAO);
+        bunny3.draw(SMBunnyA, bunnyVertexData, BunnyVAO);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

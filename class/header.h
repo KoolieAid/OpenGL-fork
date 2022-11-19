@@ -28,6 +28,92 @@ vec3 rx = normalize(glm::vec3(1, 0, 0));
 vec3 ry = normalize(glm::vec3(0, 1, 0));
 vec3 rz = normalize(glm::vec3(0, 0, 1));
 
+
+// Setup VAO & VBO Buffers
+GLuint setBuffers(vector<GLfloat> fullVertexData)
+{
+	// Setup Vertex Array Object
+	GLuint VAO;
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	// Setup Vertex Buffer Object
+	GLuint VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * fullVertexData.size(), fullVertexData.data(), GL_STATIC_DRAW);
+
+	return VAO;
+}
+
+
+class MyShader
+{
+public:
+	// Shader Program
+	GLuint shaderProgram = glCreateProgram();;
+
+	// Constructor
+	MyShader(const char* vertex, const char* fragment)
+	{
+		addVertexShader(vertex);
+		addFragmentShader(fragment);
+		link();
+	}
+
+	// Use Program
+	void activate()
+	{
+		glUseProgram(shaderProgram);
+	}
+
+private:
+	// Add Vertex Shader to the Shader Program
+	void addVertexShader(const char* directory)
+	{
+		// Load
+		std::fstream vertSrc(directory);
+		std::stringstream vertBuff;
+		vertBuff << vertSrc.rdbuf();
+		std::string vertString = vertBuff.str();
+		const char* v = vertString.c_str();
+
+		// Create & Compile Vertex Shader
+		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vertexShader, 1, &v, NULL);
+		glCompileShader(vertexShader);
+
+		// Attach Shader
+		glAttachShader(shaderProgram, vertexShader);
+	}
+
+	// Add Fragment Shader to the Shader Program
+	void addFragmentShader(const char* directory)
+	{
+		// Load
+		std::fstream fragSrc(directory);
+		std::stringstream fragBuff;
+		fragBuff << fragSrc.rdbuf();
+		std::string fragString = fragBuff.str();
+		const char* f = fragString.c_str();
+
+		// Create & Compile Fragment Shader
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fragmentShader, 1, &f, NULL);
+		glCompileShader(fragmentShader);
+
+		// Attach Shader
+		glAttachShader(shaderProgram, fragmentShader);
+	}
+
+	// Link Shader Program
+	void link()
+	{
+		glLinkProgram(shaderProgram);
+	}
+};
+
+
 // 3D Model Object Base Class
 class MyObject 
 {
@@ -45,23 +131,6 @@ class MyObject
 			position = nposition;
 			scale = nscale;
 			rotation = nrotation;
-		}
-
-		// Setup VAO & VBO Buffers
-		GLuint setBuffers(vector<GLfloat> fullVertexData)
-		{
-			// Setup Vertex Array Object
-			GLuint VAO;
-			glGenVertexArrays(1, &VAO);
-			glBindVertexArray(VAO);
-
-			// Setup Vertex Buffer Object
-			GLuint VBO;
-			glGenBuffers(1, &VBO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * fullVertexData.size(), fullVertexData.data(), GL_STATIC_DRAW);
-
-			return VAO;
 		}
 
 		// Virtual Functions
@@ -99,6 +168,7 @@ class MyObject
 			return transformation;
 		}
 };
+
 
 // Bunny Model Object Class (Sample)
 class Bunny : public MyObject
@@ -146,14 +216,14 @@ class Bunny : public MyObject
 		}
 
 		// Draw
-		void draw(GLuint shaderProgram, vector<GLfloat> fullVertexData, GLuint VAO)
+		void draw(MyShader shader, vector<GLfloat> fullVertexData, GLuint VAO)
 		{
 			// Shader Program
-			glUseProgram(shaderProgram);
+			shader.activate();
 
 			// Create Transformation Matrix
 			mat4 transformation = transform();
-			unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+			unsigned int transformLoc = glGetUniformLocation(shader.shaderProgram, "transform");
 			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
 			
 			// Bind
@@ -163,6 +233,7 @@ class Bunny : public MyObject
 			glDrawArrays(GL_TRIANGLES, 0, fullVertexData.size() / 3);
 		}
 };
+
 
 class Player : public MyObject
 {
@@ -177,6 +248,7 @@ class Player : public MyObject
 		-  Print out the current depth the sub is in the console window using cout
 	*/
 };
+
 
 class SkyBox : public MyObject
 {
@@ -193,60 +265,6 @@ public:
 
 // // // // // // // // // // // // // // // // // // // // // // // // // 
 
-class ShaderManager 
-{
-	public:
-		// Shader Program
-		GLuint shaderProgram = glCreateProgram();;
-
-		// Constructor
-		ShaderManager() {}
-
-		// Add Vertex Shader to the Shader Program
-		void addVertexShader(const char* directory)  
-		{
-			// Load
-			std::fstream vertSrc(directory);
-			std::stringstream vertBuff;
-			vertBuff << vertSrc.rdbuf();
-			std::string vertString = vertBuff.str();
-			const char* v = vertString.c_str();
-
-			// Create & Compile Vertex Shader
-			GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(vertexShader, 1, &v, NULL);
-			glCompileShader(vertexShader);
-
-			// Attach Shader
-			glAttachShader(shaderProgram, vertexShader);		
-		}
-
-		// Add Fragment Shader to the Shader Program
-		void addFragmentShader(const char* directory) 
-		{
-			// Load
-			std::fstream fragSrc(directory);
-			std::stringstream fragBuff;
-			fragBuff << fragSrc.rdbuf();
-			std::string fragString = fragBuff.str();
-			const char* f = fragString.c_str();
-
-			// Create & Compile Fragment Shader
-			GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(fragmentShader, 1, &f, NULL);
-			glCompileShader(fragmentShader);
-
-			// Attach Shader
-			glAttachShader(shaderProgram, fragmentShader);
-		}
-
-		// Link Shader Program
-		void link() 
-		{
-			glLinkProgram(shaderProgram);
-		}
-};
-
 class LightManager
 {
 	/*
@@ -256,6 +274,7 @@ class LightManager
 		- You can cycle through the intensity of the Point light using the F key (Low, Medium, High)
 	*/
 };
+
 
 class CameraManager 
 {
