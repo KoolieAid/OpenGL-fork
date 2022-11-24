@@ -68,6 +68,8 @@ int main(void)
         basses.push_back(Bass(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(bassScale, bassScale, bassScale), vec3(0.0f, 90.0f, 2.0f)));
     }
 
+    float sharkScale = 1.0f / 4.0;
+    Shark shark = Shark(vec3(-50.0f, 0.0f, 10.0f), vec3(sharkScale, sharkScale, sharkScale), vec3(0.0, 0.0f, 2.0f));
 
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
@@ -75,8 +77,13 @@ int main(void)
     GLuint BassVAO = setBuffers(bassVertexData);
     basses[0].setAttribPointer();
 
+    vector<GLfloat> sharkVertexData = shark.loadVertexData();
+    GLuint SharkVAO = setBuffers(sharkVertexData);
+    shark.setAttribPointer();
+
     // Vertex Sizes
     int bassSize = bassVertexData.size();
+    int sharkSize = sharkVertexData.size();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -85,11 +92,13 @@ int main(void)
     // Create Texture Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
     GLuint bassTex = basses[0].loadTextures();
+    GLuint sharkTex = shark.loadTextures();
 
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
 
     MyShader SMBass = MyShader("Shaders/bass.vert", "Shaders/bass.frag");
+    MyShader SMShark = MyShader("Shaders/shark.vert", "Shaders/shark.frag");
 
 
     // Setup Camera (Temp Setup)
@@ -103,12 +112,17 @@ int main(void)
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-
+        
         // Bass
         for (int i = 0; i < basses.size(); i++) {
             basses[i].draw(SMBass, bassSize, BassVAO, bassTex, camera);
             basses[i].position.z = fmod(basses[i].position.z, 20.0f) + (i / 100.0f);
         }
+
+        // Shark
+        shark.draw(SMShark, sharkSize, SharkVAO, sharkTex, camera);
+        shark.position.z = (shark.position.z > 80.0f) ? (-80.0f) : (shark.position.z + 0.15f);
+
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
