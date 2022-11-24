@@ -30,8 +30,8 @@ using namespace glm;
 
 // Global Parameters & Settings // // // // // // // // // // // // // // // // // // // // // // // // 
 
-float screen_width = 750.0f;
-float screen_height = 750.0f;
+float screenWidth = 750.0f;
+float screenHeight = 750.0f;
 
 int main(void)
 {
@@ -42,7 +42,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(screen_width, screen_height, "Final Project", NULL, NULL);
+    window = glfwCreateWindow(screenWidth, screenHeight, "Final Project", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -53,27 +53,50 @@ int main(void)
     glfwMakeContextCurrent(window);
     gladLoadGL();
 
+    glClearColor(0.493, 0.557, 0.880, 1.0f);
+
     // Screen Space
-    glViewport(0, 0, screen_width, screen_height);
+    glViewport(0, 0, screenWidth, screenHeight);
+
 
     // Load Object Models // // // // // // // // // // // // // // // // // // // // // // // //
 
-    Bunny bunny1 = Bunny(vec3(-0.5f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 45.0f, 2.0f));
-    Bunny bunny2 = Bunny(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 90.0f, 2.0f));
-    Bunny bunny3 = Bunny(vec3(0.5f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 135.0f, 2.0f));
+    float bassScale = 1.0f / 8.0f;
+    vector<Bass> basses;
+    
+    for (int i = 0; i < 10; i++) {
+        basses.push_back(Bass(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(bassScale, bassScale, bassScale), vec3(0.0f, 90.0f, 2.0f)));
+    }
 
-    // Create Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
-    vector<GLfloat> bunnyVertexData = bunny1.loadVertexData();
-    GLuint BunnyVAO = setBuffers(bunnyVertexData);
-    bunny1.setAttribPointer();
+    // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
+
+    vector<GLfloat> bassVertexData = basses[0].loadVertexData();
+    GLuint BassVAO = setBuffers(bassVertexData);
+    basses[0].setAttribPointer();
+
+    // Vertex Sizes
+    int bassSize = bassVertexData.size();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+
+    // Create Texture Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
+
+    GLuint bassTex = basses[0].loadTextures();
+
+
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
-    MyShader SMBunnyA = MyShader("Shaders/sample.vert", "Shaders/sample.frag");
-    MyShader SMBunnyB = MyShader("Shaders/sample.vert", "Shaders/sample2.frag");
+
+    MyShader SMBass = MyShader("Shaders/bass.vert", "Shaders/bass.frag");
+
+
+    // Setup Camera (Temp Setup)
+
+    MyCamera camera = MyCamera(vec3(5.0f, 0.0f, 10.0f), screenHeight, screenWidth);
+    camera.center.z = 10.0f;
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -81,15 +104,11 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Update Object Properties
-        bunny1.rotation.y = bunny1.rotation.y - 0.5;
-        bunny2.rotation.y = bunny2.rotation.y + 0.5;
-        bunny3.rotation.y = bunny3.rotation.y - 0.5;
-
-        // Draw 
-        bunny1.draw(SMBunnyA, bunnyVertexData, BunnyVAO);
-        bunny2.draw(SMBunnyB, bunnyVertexData, BunnyVAO);
-        bunny3.draw(SMBunnyA, bunnyVertexData, BunnyVAO);
+        // Bass
+        for (int i = 0; i < basses.size(); i++) {
+            basses[i].draw(SMBass, bassSize, BassVAO, bassTex, camera);
+            basses[i].position.z = fmod(basses[i].position.z, 20.0f) + (i / 100.0f);
+        }
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
