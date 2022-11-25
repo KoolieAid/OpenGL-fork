@@ -349,6 +349,7 @@ class Bass : public MyObject
 
 			// Texture
 			GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glUniform1i(tex0Address, 0);
 
@@ -409,7 +410,7 @@ public:
 		return fullVertexData;
 	}
 
-	// Load Textures :: GL_TEXTURE_1
+	// Load Textures
 	GLuint loadTextures()
 	{
 		GLuint texture;
@@ -461,8 +462,143 @@ public:
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glUniform1i(tex0Address, 0);
+
+		// Bind
+		glBindVertexArray(VAO);
+
+		// Draw
+		glDrawArrays(GL_TRIANGLES, 0, vsize / 8);
+	}
+};
+
+// Whale Model Object Class
+class Whale : public MyObject
+{
+public:
+	// Path
+	string path = "3D/whale.obj";
+
+	// Constructors
+	Whale() : MyObject() {}
+
+	Whale(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
+
+	// Load Vertex Data 
+	vector<GLfloat> loadVertexData()
+	{
+		// Loader variables
+		vector<tinyobj::shape_t> shapes;
+		vector<tinyobj::material_t> materials;
+		string warning, error;
+		tinyobj::attrib_t attributes;
+
+		// Load the obj file
+		bool success = tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, path.c_str());
+
+		vector<GLfloat> fullVertexData;
+		for (int i = 0; i < shapes[0].mesh.indices.size(); i++) {
+			tinyobj::index_t vData = shapes[0].mesh.indices[i];
+			int vertexIndex = vData.vertex_index * 3;
+			int normIndex = vData.normal_index * 3;
+			int texIndex = vData.texcoord_index * 2;
+
+			// Get X Y Z
+			fullVertexData.push_back(attributes.vertices[vertexIndex]);
+			fullVertexData.push_back(attributes.vertices[vertexIndex + 1]);
+			fullVertexData.push_back(attributes.vertices[vertexIndex + 2]);
+
+			// Get A B C
+			fullVertexData.push_back(attributes.normals[normIndex]);
+			fullVertexData.push_back(attributes.normals[normIndex + 1]);
+			fullVertexData.push_back(attributes.normals[normIndex + 2]);
+
+			// Get U V
+			fullVertexData.push_back(attributes.texcoords[texIndex]);
+			fullVertexData.push_back(attributes.texcoords[texIndex + 1]);
+		}
+
+		return fullVertexData;
+	}
+
+	// Load Textures 
+	GLuint loadTextures()
+	{
+		GLuint texture;
+		int img_width, img_height, color_channels;
+		unsigned char* tex_bytes = stbi_load("Textures/whale_tex.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(tex_bytes);
+
+		return texture;
+	}
+
+	GLuint loadNormalTextures()
+	{
+		GLuint texture;
+		int img_width, img_height, color_channels;
+		unsigned char* tex_bytes = stbi_load("Textures/whale_normal_tex.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &texture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(tex_bytes);
+
+		return texture;
+	}
+
+	// Setup Attrib Pointers 
+	void setAttribPointer()
+	{
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		GLintptr abcptr = 3 * sizeof(GL_FLOAT);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)abcptr);
+		glEnableVertexAttribArray(1);
+
+		GLintptr uvptr = 6 * sizeof(GL_FLOAT);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)uvptr);
+		glEnableVertexAttribArray(2);
+	}
+
+	// Draw
+	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, GLuint textureNorm, MyCamera camera)
+	{
+		// Shader Program
+		shader.activate();
+
+		// Create Transformation Matrix
+		mat4 transformation = transform();
+		unsigned int transformLoc = glGetUniformLocation(shader.shaderProgram, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
+
+		// Projection & View Matrices
+		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+
+		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+
+		// Texture
+		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glUniform1i(tex0Address, 0);
+
+		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, textureNorm);
+		glUniform1i(tex1Address, 1);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -513,9 +649,14 @@ public:
 	https://antongerdelan.net/colour/ :: float vector color picker
 
 
-
+	
 */
 
+/*
+	Whale: https://sketchfab.com/3d-models/game-ready-humpback-whale-da07e3ff73914ff28d2b8cf9da794036 ~ Allie2k
+	Bass:  https://www.turbosquid.com/3d-models/bass-fish-3d-1927365 ~ levermanteam
+	Shark: https://www.turbosquid.com/3d-models/white-shark-3d-model-1801738 ~ Christian Jacuinde
 
+*/
 
 

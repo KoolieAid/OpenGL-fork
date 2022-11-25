@@ -65,11 +65,14 @@ int main(void)
     vector<Bass> basses;
     
     for (int i = 0; i < 10; i++) {
-        basses.push_back(Bass(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(bassScale, bassScale, bassScale), vec3(0.0f, 90.0f, 2.0f)));
+        basses.push_back(Bass(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(bassScale), vec3(0.0f, 90.0f, 2.0f)));
     }
 
     float sharkScale = 1.0f / 4.0;
-    Shark shark = Shark(vec3(-50.0f, 0.0f, 10.0f), vec3(sharkScale, sharkScale, sharkScale), vec3(0.0, 0.0f, 2.0f));
+    Shark shark = Shark(vec3(-50.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
+
+    float whaleScale = 6.0f;
+    Whale whale = Whale(vec3(-200.0f, 0.0f, 10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
 
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
@@ -81,9 +84,14 @@ int main(void)
     GLuint SharkVAO = setBuffers(sharkVertexData);
     shark.setAttribPointer();
 
+    vector<GLfloat> whaleVertexData = whale.loadVertexData();
+    GLuint WhaleVAO = setBuffers(whaleVertexData);
+    whale.setAttribPointer();
+
     // Vertex Sizes
     int bassSize = bassVertexData.size();
     int sharkSize = sharkVertexData.size();
+    int whaleSize = whaleVertexData.size();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -93,12 +101,15 @@ int main(void)
 
     GLuint bassTex = basses[0].loadTextures();
     GLuint sharkTex = shark.loadTextures();
+    GLuint whaleTex = whale.loadTextures();
+    GLuint whaleNormTex = whale.loadNormalTextures();
 
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
 
     MyShader SMBass = MyShader("Shaders/bass.vert", "Shaders/bass.frag");
     MyShader SMShark = MyShader("Shaders/shark.vert", "Shaders/shark.frag");
+    MyShader SMWhale = MyShader("Shaders/whale.vert", "Shaders/whale.frag");
 
 
     // Setup Camera (Temp Setup)
@@ -113,6 +124,10 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
+        // Whale
+        whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTex, whaleNormTex, camera);
+        whale.position.z = (whale.position.z > 400.0f) ? (-400.0f) : (whale.position.z + 0.20f);
+
         // Bass
         for (int i = 0; i < basses.size(); i++) {
             basses[i].draw(SMBass, bassSize, BassVAO, bassTex, camera);
@@ -122,7 +137,6 @@ int main(void)
         // Shark
         shark.draw(SMShark, sharkSize, SharkVAO, sharkTex, camera);
         shark.position.z = (shark.position.z > 80.0f) ? (-80.0f) : (shark.position.z + 0.15f);
-
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

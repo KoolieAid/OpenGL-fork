@@ -1,0 +1,21 @@
+﻿✔ ✘
+
+This document summarizes the features each object has.
+
+> Bass 
+	Vertex			✔ 
+	Normals			✔
+	Texture			✔
+	Normal Texture  ✘
+
+> Shark 
+	Vertex			✔ 
+	Normals			✔
+	Texture			✔
+	Normal Texture  ✘
+
+> Whale 
+	Vertex			✔ 
+	Normals			✔
+	Texture			✔
+	Normal Texture  ✔

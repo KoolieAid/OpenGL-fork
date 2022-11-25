@@ -141,6 +141,9 @@
     <ClInclude Include="loaders\stb_image.h" />
     <ClInclude Include="loaders\tiny_obj_loader.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="object_summary.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
