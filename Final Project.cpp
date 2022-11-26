@@ -33,6 +33,34 @@ using namespace glm;
 float screenWidth = 750.0f;
 float screenHeight = 750.0f;
 
+// Control Pointers
+vec3* cPosition;
+vec3* cScale;
+vec3* cRotation;
+
+// Key Callbacks [Controls?/Debugging] // // // // // // // // // // // // // // // // // // // // // // // // 
+void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
+    switch (key) {
+    case GLFW_KEY_W: cRotation->z += 1.0f;
+        break;
+    case GLFW_KEY_S: cRotation->z -= 1.0f;
+        break;
+    case GLFW_KEY_A: cRotation->x -= 1.0f;
+        break;
+    case GLFW_KEY_D: cRotation->x += 1.0f;
+        break;
+    case GLFW_KEY_Q: cRotation->y += 1.0f;
+        break;
+    case GLFW_KEY_E: cRotation->y -= 1.0f;
+        break;
+    case GLFW_KEY_SPACE: 
+        break;
+    }
+
+}
+
+
+
 int main(void)
 {
     GLFWwindow* window;
@@ -58,10 +86,13 @@ int main(void)
     // Screen Space
     glViewport(0, 0, screenWidth, screenHeight);
 
+    // Inputs
+    glfwSetKeyCallback(window, keyCallback);
+
 
     // Load Object Models // // // // // // // // // // // // // // // // // // // // // // // //
 
-    float bassScale = 1.0f / 8.0f;
+    float bassScale = 1.0f / 16.0f;
     vector<Bass> basses;
     
     for (int i = 0; i < 10; i++) {
@@ -73,6 +104,10 @@ int main(void)
 
     float whaleScale = 6.0f;
     Whale whale = Whale(vec3(-200.0f, 0.0f, 10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
+
+    float submarineScale = 1.0 / 16.0f;
+    Submarine submarine = Submarine(vec3(-60.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
+
 
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
 
@@ -88,10 +123,15 @@ int main(void)
     GLuint WhaleVAO = setBuffers(whaleVertexData);
     whale.setAttribPointer();
 
+    vector<GLfloat> submarineVertexData = submarine.loadVertexData();
+    GLuint SubmarineVAO = setBuffers(submarineVertexData);
+    submarine.setAttribPointer();
+
     // Vertex Sizes
     int bassSize = bassVertexData.size();
     int sharkSize = sharkVertexData.size();
     int whaleSize = whaleVertexData.size();
+    int submarineSize = submarineVertexData.size();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -103,6 +143,8 @@ int main(void)
     GLuint sharkTex = shark.loadTextures();
     GLuint whaleTex = whale.loadTextures();
     GLuint whaleNormTex = whale.loadNormalTextures();
+    GLuint submarineTex = submarine.loadTextures();
+    GLuint submarineNormTex = submarine.loadNormalTextures();
 
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
@@ -110,6 +152,7 @@ int main(void)
     MyShader SMBass = MyShader("Shaders/bass.vert", "Shaders/bass.frag");
     MyShader SMShark = MyShader("Shaders/shark.vert", "Shaders/shark.frag");
     MyShader SMWhale = MyShader("Shaders/whale.vert", "Shaders/whale.frag");
+    MyShader SMSubmarine = MyShader("Shaders/submarine.vert", "Shaders/submarine.frag");
 
 
     // Setup Camera (Temp Setup)
@@ -117,6 +160,11 @@ int main(void)
     MyCamera camera = MyCamera(vec3(5.0f, 0.0f, 10.0f), screenHeight, screenWidth);
     camera.center.z = 10.0f;
 
+
+    // Debugging Controls
+    cRotation = &basses[0].rotation;
+
+    // TODO: Scale Objects Accordingly
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -137,6 +185,12 @@ int main(void)
         // Shark
         shark.draw(SMShark, sharkSize, SharkVAO, sharkTex, camera);
         shark.position.z = (shark.position.z > 80.0f) ? (-80.0f) : (shark.position.z + 0.15f);
+
+        // Submarine
+        submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTex, submarineNormTex, camera);
+        submarine.position.z = (submarine.position.z > 80.0f) ? (-80.0f) : (submarine.position.z + 1.0f);
+
+        
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

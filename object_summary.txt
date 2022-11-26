@@ -19,3 +19,9 @@ This document summarizes the features each object has.
 	Normals			✔
 	Texture			✔
 	Normal Texture  ✔
+
+> Submarine 
+	Vertex			✔ 
+	Normals			✔
+	Texture			✔
+	Normal Texture  ✔
