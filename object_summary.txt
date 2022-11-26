@@ -2,26 +2,86 @@
 
 This document summarizes the features each object has.
 
+Fish Collection: https://sketchfab.com/SDAdsads/collections/fish-941063fe289347ea8b858aaa64af971c
+
+Whale:		https://sketchfab.com/3d-models/blue-whale-98f39ec637474e5fae8c4fc38869ea44 ~ misaooo
+Bass:		https://www.turbosquid.com/3d-models/bass-fish-3d-1927365 ~ levermanteam
+Shark:		https://sketchfab.com/3d-models/great-white-shark-e4f107a6d87b424fb165aba9a53d0665 ~ Mateus Schwaab
+Submarine:  https://sketchfab.com/3d-models/yellow-submarine-0dcb53b8f0734509a83a51e672d27dc4 ~ Landon Wright
+Blue Betta: https://sketchfab.com/3d-models/blue-betta-8a16e526271c488f8dcad766cc746c76 ~ Chaitanya Krishnan
+SailFish:	https://sketchfab.com/3d-models/sailfish-5c7b14e21fba4eefad77c84edccfc9d2 ~ Mateus Schwaab
+Trout:		https://sketchfab.com/3d-models/trout-cc4eef17bff24cb58358cfa1b7e045a4 ~ Thunder
+
+> Template
+	Vertex				✘ 
+	Normals				✘
+	Texture				✘
+	Normal Texture		✘
+	Ambient Occulsion   ✘
+	Metallic Texture	✘
+	Rough Texture		✘
+
+- - - - - - - - - - - - - - - - - - - - 
+
 > Bass 
-	Vertex			✔ 
-	Normals			✔
-	Texture			✔
-	Normal Texture  ✘
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✘
+	Ambient Occulsion   ✘
+	Metallic Texture	✘
+	Rough Texture		✘
 
 > Shark 
-	Vertex			✔ 
-	Normals			✔
-	Texture			✔
-	Normal Texture  ✘
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✔
+	Ambient Occulsion   ✔
+	Metallic Texture	✔
+	Rough Texture		✔
 
-> Whale 
-	Vertex			✔ 
-	Normals			✔
-	Texture			✔
-	Normal Texture  ✔
+> Whale
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✔
+	Ambient Occulsion   ✘
+	Metallic Texture	✘
+	Rough Texture		✘
 
-> Submarine 
-	Vertex			✔ 
-	Normals			✔
-	Texture			✔
-	Normal Texture  ✔
+> Submarine
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✔
+	Ambient Occulsion   ✔
+	Metallic Texture	✔
+	Rough Texture		✔
+
+> Blue Betta
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✔
+	Ambient Occulsion   ✘
+	Metallic Texture	✘
+	Rough Texture		✘
+
+> Sail Fish
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✔
+	Ambient Occulsion   ✔
+	Metallic Texture	✔
+	Rough Texture		✔
+
+> Trout
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✔
+	Ambient Occulsion   ✘
+	Metallic Texture	✔
+	Rough Texture		✔
