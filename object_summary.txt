@@ -9,8 +9,9 @@ Bass:		https://www.turbosquid.com/3d-models/bass-fish-3d-1927365 ~ levermanteam
 Shark:		https://sketchfab.com/3d-models/great-white-shark-e4f107a6d87b424fb165aba9a53d0665 ~ Mateus Schwaab
 Submarine:  https://sketchfab.com/3d-models/yellow-submarine-0dcb53b8f0734509a83a51e672d27dc4 ~ Landon Wright
 Blue Betta: https://sketchfab.com/3d-models/blue-betta-8a16e526271c488f8dcad766cc746c76 ~ Chaitanya Krishnan
-SailFish:	https://sketchfab.com/3d-models/sailfish-5c7b14e21fba4eefad77c84edccfc9d2 ~ Mateus Schwaab
+SpadeFish:  https://sketchfab.com/3d-models/spadefish-785eb05eed7e4d438eb31ce39f4f9715 ~ Batton
 Trout:		https://sketchfab.com/3d-models/trout-cc4eef17bff24cb58358cfa1b7e045a4 ~ Thunder
+AngelFish:  https://sketchfab.com/3d-models/fish0528-5c1f704376a04ecb84a17c3966c97767 ~ irvinlin
 
 > Template
 	Vertex				✘ 
@@ -68,14 +69,14 @@ Trout:		https://sketchfab.com/3d-models/trout-cc4eef17bff24cb58358cfa1b7e045a4 ~
 	Metallic Texture	✘
 	Rough Texture		✘
 
-> Sail Fish
+> Spade Fish
 	Vertex				✔ 
 	Normals				✔
 	Texture				✔
-	Normal Texture		✔
-	Ambient Occulsion   ✔
+	Normal Texture		✘
+	Ambient Occulsion   ✘
 	Metallic Texture	✔
-	Rough Texture		✔
+	Rough Texture		✘
 
 > Trout
 	Vertex				✔ 
@@ -85,3 +86,12 @@ Trout:		https://sketchfab.com/3d-models/trout-cc4eef17bff24cb58358cfa1b7e045a4 ~
 	Ambient Occulsion   ✘
 	Metallic Texture	✔
 	Rough Texture		✔
+
+> AngelFish
+	Vertex				✔ 
+	Normals				✔
+	Texture				✔
+	Normal Texture		✘
+	Ambient Occulsion   ✔
+	Metallic Texture	✘
+	Rough Texture		✘
