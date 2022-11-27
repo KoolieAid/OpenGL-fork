@@ -53,6 +53,16 @@ GLuint setBuffers(vector<GLfloat> fullVertexData)
 	return VAO;
 }
 
+// Custom Class (contains all texture IDs for an Object)
+class MyTextureMap {
+public:
+	GLuint baseTex;		// Base Texture						tex0 : GL_TEXTURE0
+	GLuint normTex;		// Normal Texture					tex1 : GL_TEXTURE1
+	GLuint rougTex;		// Roughness Texture				tex2 : GL_TEXTURE2
+	GLuint ambiTex;		// Ambient Occlusion Texture		tex3 : GL_TEXTURE3
+	GLuint metaTex;		// Metallic Texture					tex4 : GL_TEXTURE4
+};
+
 // // // // // // // // // // // // // // // // // // // // // // // // // 
 
 class MyShader
@@ -132,13 +142,13 @@ class MyCamera
 		vec3 center = vec3(0.0f, 0.0f, 0.0f);
 
 		// Display Resolution
-		float height = 1920.0f;
-		float width = 1080.0f;
+		float width = 1920.0f;
+		float height = 1080.0f;
 
 		// Constructors
 		MyCamera() {}
 
-		MyCamera(vec3 nposition, float nheight, float nwidth)
+		MyCamera(vec3 nposition, float nwidth, float nheight)
 		{	
 			position = nposition;
 			height = nheight;
@@ -148,7 +158,7 @@ class MyCamera
 		// Temp Methods (This class is passed onto the draw function of 3D object classes)
 		mat4 project()
 		{
-			return perspective(radians(90.0f), height / width, 0.01f, 1000.0f);
+			return perspective(radians(90.0f), width / height, 0.01f, 1000.0f);
 		}
 
 		mat4 view()
@@ -216,7 +226,7 @@ class MyObject
 		}
 
 		// Load Texture Data
-		virtual GLuint loadTextures()
+		GLuint loadTextures()
 		{
 			cout << "Load Texture Data function is not defined!";
 			return def;
@@ -299,21 +309,23 @@ class Bass : public MyObject
 			return fullVertexData;
 		}
 
-		// Load Textures :: GL_TEXTURE_0
-		GLuint loadTextures()
+		// Load Textures
+		MyTextureMap loadTextures()
 		{
-			GLuint texture;
+			MyTextureMap map;
+
+			// Base Texture
 			int img_width, img_height, color_channels;
 			unsigned char* tex_bytes = stbi_load("Textures/Bass/BassTexture.png", &img_width, &img_height, &color_channels, 0);
-			glGenTextures(1, &texture);
+			glGenTextures(1, &map.baseTex);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture);
+			glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			stbi_image_free(tex_bytes);
 
-			return texture;
+			return map;
 		}
 
 		// Setup Attrib Pointers 
@@ -332,7 +344,7 @@ class Bass : public MyObject
 		}
 
 		// Draw
-		void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, MyCamera camera)
+		void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 		{
 			// Shader Program
 			shader.activate();
@@ -352,7 +364,7 @@ class Bass : public MyObject
 			// Texture
 			GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture);
+			glBindTexture(GL_TEXTURE_2D, map.baseTex);
 			glUniform1i(tex0Address, 0);
 
 			// Bind
@@ -413,20 +425,32 @@ public:
 	}
 
 	// Load Textures
-	GLuint loadTextures()
+	MyTextureMap loadTextures()
 	{
-		GLuint texture;
+		MyTextureMap map;
+
+		// Base Texture
 		int img_width, img_height, color_channels;
 		unsigned char* tex_bytes = stbi_load("Textures/Shark/DefaultMaterial_Base_Color.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
-		return texture;
+		// Normal Texture
+		unsigned char* norm_bytes = stbi_load("Textures/Shark/DefaultMaterial_Normal_OpenGL.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.normTex);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, norm_bytes);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(norm_bytes);
+
+		return map;
 	}
 
 	// Setup Attrib Pointers 
@@ -445,7 +469,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 	{
 		// Shader Program
 		shader.activate();
@@ -465,8 +489,13 @@ public:
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
+
+		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
+		glUniform1i(tex1Address, 1);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -526,36 +555,32 @@ public:
 	}
 
 	// Load Textures 
-	GLuint loadTextures()
+	MyTextureMap loadTextures()
 	{
-		GLuint texture;
+		MyTextureMap map;
+
+		// Base Texture
 		int img_width, img_height, color_channels;
 		unsigned char* tex_bytes = stbi_load("Textures/BlueWhale/material_Base_Color.jpg", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
-		return texture;
-	}
-
-	GLuint loadNormalTextures()
-	{
-		GLuint texture;
-		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/BlueWhale/material_Normal_OpenGL1.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		// Normal Texture
+		unsigned char* norm_bytes = stbi_load("Textures/BlueWhale/material_Normal_OpenGL1.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.normTex);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, norm_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		stbi_image_free(tex_bytes);
+		stbi_image_free(norm_bytes);
 
-		return texture;
+		return map;
 	}
 
 	// Setup Attrib Pointers 
@@ -574,7 +599,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, GLuint textureNorm, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 	{
 		// Shader Program
 		shader.activate();
@@ -594,12 +619,12 @@ public:
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
 
 		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textureNorm);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
 
 		// Bind
@@ -660,36 +685,32 @@ public:
 	}
 
 	// Load Textures 
-	GLuint loadTextures()
+	MyTextureMap loadTextures()
 	{
-		GLuint texture;
+		MyTextureMap map;
+
+		// Base Texture
 		int img_width, img_height, color_channels;
 		unsigned char* tex_bytes = stbi_load("Textures/Submarine/SubLow0Smooth_DefaultMaterial_BaseColor.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
-		return texture;
-	}
-
-	GLuint loadNormalTextures()
-	{
-		GLuint texture;
-		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/Submarine/SubLow0Smooth_DefaultMaterial_Normal.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		// Normal Texture
+		unsigned char* norm_bytes = stbi_load("Textures/Submarine/SubLow0Smooth_DefaultMaterial_Normal.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.normTex);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, norm_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		stbi_image_free(tex_bytes);
+		stbi_image_free(norm_bytes);
 
-		return texture;
+		return map;
 	}
 
 	// Setup Attrib Pointers 
@@ -708,7 +729,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, GLuint textureNorm, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 	{
 		// Shader Program
 		shader.activate();
@@ -728,12 +749,12 @@ public:
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
 
 		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textureNorm);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
 
 		// Bind
@@ -794,36 +815,32 @@ public:
 	}
 
 	// Load Textures 
-	GLuint loadTextures()
+	MyTextureMap loadTextures()
 	{
-		GLuint texture;
+		MyTextureMap map;
+
+		// Base Texture
 		int img_width, img_height, color_channels;
 		unsigned char* tex_bytes = stbi_load("Textures/BlueBetta/texture.jpg", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
-		return texture;
-	}
-
-	GLuint loadNormalTextures()
-	{
-		GLuint texture;
-		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/texutre_norm.jpg", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		// Normal Texture
+		unsigned char* norm_bytes = stbi_load("Textures/BlueBetta/texture_norm.jpg", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.normTex);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, norm_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		stbi_image_free(tex_bytes);
+		stbi_image_free(norm_bytes);
 
-		return texture;
+		return map;
 	}
 
 	// Setup Attrib Pointers 
@@ -842,7 +859,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, GLuint textureNorm, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 	{
 		// Shader Program
 		shader.activate();
@@ -862,12 +879,12 @@ public:
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
 
 		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textureNorm);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
 
 		// Bind
@@ -878,17 +895,17 @@ public:
 	}
 };
 
-// Sail Fish Model Object Class
-class SailFish : public MyObject
+// Spade Fish Model Object Class
+class SpadeFish : public MyObject
 {
 public:
 	// Path
-	string path = "3D/sailfish.obj";
+	string path = "3D/spadefish.obj";
 
 	// Constructors
-	SailFish() : MyObject() {}
+	SpadeFish() : MyObject() {}
 
-	SailFish(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
+	SpadeFish(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
 
 	// Load Vertex Data 
 	vector<GLfloat> loadVertexData()
@@ -928,36 +945,22 @@ public:
 	}
 
 	// Load Textures 
-	GLuint loadTextures()
+	MyTextureMap loadTextures()
 	{
-		GLuint texture;
+		MyTextureMap map;
+
+		// Base Texture
 		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/SailFish/DefaultMaterial_Base_Color.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		unsigned char* tex_bytes = stbi_load("Textures/SpadeFish/ESPADON1_Material.001_BaseColor.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
-		return texture;
-	}
-
-	GLuint loadNormalTextures()
-	{
-		GLuint texture;
-		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/SailFish/DefaultMaterial_Normal_OpenGL.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		stbi_image_free(tex_bytes);
-
-		return texture;
+		return map;
 	}
 
 	// Setup Attrib Pointers 
@@ -976,7 +979,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, GLuint textureNorm, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 	{
 		// Shader Program
 		shader.activate();
@@ -996,13 +999,8 @@ public:
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
-
-		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textureNorm);
-		glUniform1i(tex1Address, 1);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -1062,36 +1060,32 @@ public:
 	}
 
 	// Load Textures 
-	GLuint loadTextures()
+	MyTextureMap loadTextures()
 	{
-		GLuint texture;
+		MyTextureMap map;
+
+		// Base Texture
 		int img_width, img_height, color_channels;
 		unsigned char* tex_bytes = stbi_load("Textures/Trout/trout_Trout_BaseColor.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
-		return texture;
-	}
-
-	GLuint loadNormalTextures()
-	{
-		GLuint texture;
-		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/Trout/trout_Trout_Normal.png", &img_width, &img_height, &color_channels, 0);
-		glGenTextures(1, &texture);
+		// Normal Texture
+		unsigned char* norm_bytes = stbi_load("Textures/Trout/trout_Trout_Normal.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.normTex);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, norm_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		stbi_image_free(tex_bytes);
+		stbi_image_free(norm_bytes);
 
-		return texture;
+		return map;
 	}
 
 	// Setup Attrib Pointers 
@@ -1110,7 +1104,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, GLuint texture, GLuint textureNorm, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
 	{
 		// Shader Program
 		shader.activate();
@@ -1130,13 +1124,128 @@ public:
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
 
 		GLuint tex1Address = glGetUniformLocation(shader.shaderProgram, "tex1");
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textureNorm);
+		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
+
+		// Bind
+		glBindVertexArray(VAO);
+
+		// Draw
+		glDrawArrays(GL_TRIANGLES, 0, vsize / 8);
+	}
+};
+
+// Angel Fish Model Object Class
+class AngelFish : public MyObject
+{
+public:
+	// Path
+	string path = "3D/angel_fish.obj";
+
+	// Constructors
+	AngelFish() : MyObject() {}
+
+	AngelFish(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
+
+	// Load Vertex Data 
+	vector<GLfloat> loadVertexData()
+	{
+		// Loader variables
+		vector<tinyobj::shape_t> shapes;
+		vector<tinyobj::material_t> materials;
+		string warning, error;
+		tinyobj::attrib_t attributes;
+
+		// Load the obj file
+		bool success = tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, path.c_str());
+
+		vector<GLfloat> fullVertexData;
+		for (int i = 0; i < shapes[0].mesh.indices.size(); i++) {
+			tinyobj::index_t vData = shapes[0].mesh.indices[i];
+			int vertexIndex = vData.vertex_index * 3;
+			int normIndex = vData.normal_index * 3;
+			int texIndex = vData.texcoord_index * 2;
+
+			// Get X Y Z
+			fullVertexData.push_back(attributes.vertices[vertexIndex]);
+			fullVertexData.push_back(attributes.vertices[vertexIndex + 1]);
+			fullVertexData.push_back(attributes.vertices[vertexIndex + 2]);
+
+			// Get A B C
+			fullVertexData.push_back(attributes.normals[normIndex]);
+			fullVertexData.push_back(attributes.normals[normIndex + 1]);
+			fullVertexData.push_back(attributes.normals[normIndex + 2]);
+
+			// Get U V
+			fullVertexData.push_back(attributes.texcoords[texIndex]);
+			fullVertexData.push_back(attributes.texcoords[texIndex + 1]);
+		}
+
+		return fullVertexData;
+	}
+
+	// Load Textures 
+	MyTextureMap loadTextures()
+	{
+		MyTextureMap map;
+
+		// Base Texture
+		int img_width, img_height, color_channels;
+		unsigned char* tex_bytes = stbi_load("Textures/AngelFish/texture_140170014617.jpeg", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.baseTex);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(tex_bytes);
+
+		return map;
+	}
+
+	// Setup Attrib Pointers 
+	void setAttribPointer()
+	{
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		GLintptr abcptr = 3 * sizeof(GL_FLOAT);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)abcptr);
+		glEnableVertexAttribArray(1);
+
+		GLintptr uvptr = 6 * sizeof(GL_FLOAT);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)uvptr);
+		glEnableVertexAttribArray(2);
+	}
+
+	// Draw
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	{
+		// Shader Program
+		shader.activate();
+
+		// Create Transformation Matrix
+		mat4 transformation = transform();
+		unsigned int transformLoc = glGetUniformLocation(shader.shaderProgram, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
+
+		// Projection & View Matrices
+		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+
+		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+
+		// Texture
+		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
+		glUniform1i(tex0Address, 0);
 
 		// Bind
 		glBindVertexArray(VAO);

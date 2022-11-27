@@ -30,8 +30,8 @@ using namespace glm;
 
 // Global Parameters & Settings // // // // // // // // // // // // // // // // // // // // // // // // 
 
-float screenWidth = 750.0f;
-float screenHeight = 750.0f;
+float screenWidth = 1920.0f;
+float screenHeight = 1080.0f;
 
 // Control Pointers
 vec3* cPosition;
@@ -98,8 +98,9 @@ int main(void)
     float whaleScale = 6.0f;
     float submarineScale = 1.0 / 16.0f;
     float blueBettaScale = 1.0f / 512.0f;
-    float sailFishScale = 1.0f / 512.0f;
+    float spadeFishScale = 1.0f / 512.0f;
     float troutScale = 1.0f / 32.0f;
+    float angelFishScale = 1.0f / 4.0f;
 
     vector<Bass> basses;
     for (int i = 0; i < 12; i++) {
@@ -111,9 +112,14 @@ int main(void)
         blueBettas.push_back(BlueBetta(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(blueBettaScale), vec3(0.0f, 90.0f, 2.0f)));
     }
 
-    vector<SailFish> sailFishes;
+    vector<SpadeFish> spadeFishes;
     for (int i = 0; i < 8; i++) {
-        sailFishes.push_back(SailFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(sailFishScale), vec3(0.0f, 0.0f, 2.0f)));
+        spadeFishes.push_back(SpadeFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(spadeFishScale), vec3(0.0f, 90.0f, 2.0f)));
+    }
+
+    vector<AngelFish> angelFishes;
+    for (int i = 0; i < 12; i++) {
+        angelFishes.push_back(AngelFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(angelFishScale), vec3(0.0f, -90.0f, 2.0f)));
     }
 
     vector<Trout> trouts;
@@ -127,6 +133,7 @@ int main(void)
 
    
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
+    cout << "> Loading Vertex Data...\n";
 
     vector<GLfloat> bassVertexData = basses[0].loadVertexData();
     GLuint BassVAO = setBuffers(bassVertexData);
@@ -148,13 +155,17 @@ int main(void)
     GLuint BlueBettaVAO = setBuffers(blueBettaVertexData);
     blueBettas[0].setAttribPointer();
 
-    vector<GLfloat> sailFishVertexData = sailFishes[0].loadVertexData();
-    GLuint SailFishVAO = setBuffers(sailFishVertexData);
-    sailFishes[0].setAttribPointer();
+    vector<GLfloat> spadeFishVertexData = spadeFishes[0].loadVertexData();
+    GLuint SpadeFishVAO = setBuffers(spadeFishVertexData);
+    spadeFishes[0].setAttribPointer();
 
     vector<GLfloat> troutVertexData = trouts[0].loadVertexData();
     GLuint TroutVAO = setBuffers(troutVertexData);
     trouts[0].setAttribPointer();
+
+    vector<GLfloat> angelFishVertexData = angelFishes[0].loadVertexData();
+    GLuint AngelFishVAO = setBuffers(angelFishVertexData);
+    angelFishes[0].setAttribPointer();
 
     // Vertex Sizes
     int bassSize = bassVertexData.size();
@@ -162,97 +173,111 @@ int main(void)
     int whaleSize = whaleVertexData.size();
     int submarineSize = submarineVertexData.size();
     int blueBettaSize = blueBettaVertexData.size();
-    int sailFishSize = sailFishVertexData.size();
+    int spadeFishSize = spadeFishVertexData.size();
     int troutSize = troutVertexData.size();
+    int angelFishSize = angelFishVertexData.size();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
 
     // Create Texture Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
+    cout << "> Loading Texture Data...\n";
 
-    GLuint bassTex = basses[0].loadTextures();
-    GLuint sharkTex = shark.loadTextures();
-    GLuint whaleTex = whale.loadTextures();
-    GLuint whaleNormTex = whale.loadNormalTextures();
-    GLuint submarineTex = submarine.loadTextures();
-    GLuint submarineNormTex = submarine.loadNormalTextures();
-    GLuint blueBettaTex = blueBettas[0].loadTextures();
-    GLuint blueBettaNormTex = blueBettas[0].loadNormalTextures();
-    GLuint sailFishTex = sailFishes[0].loadTextures();
-    GLuint sailFishNormTex = sailFishes[0].loadNormalTextures();
-    GLuint troutTex = trouts[0].loadTextures();
-    GLuint troutNormTex = trouts[0].loadNormalTextures();
+    MyTextureMap bassTexMap = basses[0].loadTextures();
+    MyTextureMap sharkTexMap = shark.loadTextures();
+    MyTextureMap whaleTexMap = whale.loadTextures();
+    MyTextureMap submarineTexMap = submarine.loadTextures();
+    MyTextureMap blueBettaTexMap = blueBettas[0].loadTextures();
+    MyTextureMap spadeFishTexMap = spadeFishes[0].loadTextures();
+    MyTextureMap troutTexMap = trouts[0].loadTextures();
+    MyTextureMap angelFishTexMap = angelFishes[0].loadTextures();
 
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
+    cout << "> Loading Shader Data...\n";
 
     MyShader SMBass = MyShader("Shaders/bass.vert", "Shaders/bass.frag");
     MyShader SMShark = MyShader("Shaders/shark.vert", "Shaders/shark.frag");
     MyShader SMWhale = MyShader("Shaders/whale.vert", "Shaders/whale.frag");
     MyShader SMSubmarine = MyShader("Shaders/submarine.vert", "Shaders/submarine.frag");
     MyShader SMBlueBetta = MyShader("Shaders/blue_betta.vert", "Shaders/blue_betta.frag");
-    MyShader SMSailFish = MyShader("Shaders/sail_fish.vert", "Shaders/sail_fish.frag");
+    MyShader SMSailFish = MyShader("Shaders/spade_fish.vert", "Shaders/spade_fish.frag");
     MyShader SMTrout = MyShader("Shaders/trout.vert", "Shaders/trout.frag");
+    MyShader SMAngelFish = MyShader("Shaders/angel_fish.vert", "Shaders/angel_fish.frag");
 
 
     // Setup Camera (Temp Setup)
+    cout << "> Loading Camera Data...\n";
 
-    MyCamera camera = MyCamera(vec3(5.0f, 0.0f, 10.0f), screenHeight, screenWidth);
+    MyCamera camera = MyCamera(vec3(5.0f, 0.0f, 10.0f), screenWidth, screenHeight);
     camera.center.z = 10.0f;
+
+    // Setup Lighting (Temp Setup)
+    cout << "> Loading Lighting Data...\n";
 
 
     // Debugging Controls
-    cRotation = &whale.rotation;
+    cRotation = &spadeFishes[0].rotation;
+   
 
-    // TODO: Scale Objects Accordingly
+    // For Loops Counters
     int numBass = basses.size();
     int numBetta = blueBettas.size();
-    int numSailFish = sailFishes.size();
+    int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
+    int numAngelFish = angelFishes.size();
 
-    trouts[0].position.x = 0.0f;
+    // TODO: Scale ALL Objects Accordingly
 
+    cout << "> Drawing...\n";
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+
         // Whale
-        whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTex, whaleNormTex, camera);
+        whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, camera);
         whale.position.z = (whale.position.z > 600.0f) ? (-600.0f) : (whale.position.z + 0.40f);
 
         // Shark
-        shark.draw(SMShark, sharkSize, SharkVAO, sharkTex, camera);
+        shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, camera);
         shark.position.z = (shark.position.z > 80.0f) ? (-80.0f) : (shark.position.z + 0.15f);
 
-        // Sail Fish
-        for (int i = 0; i < numSailFish; i++) {
-            sailFishes[i].draw(SMSailFish, sailFishSize, SailFishVAO, sailFishTex, sailFishNormTex, camera);
-            sailFishes[i].position.z = fmod(sailFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+        // Spade Fish
+        for (int i = 0; i < numSpadeFish; i++) {
+            spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, camera);
+            spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Bass
         for (int i = 0; i < numBass; i++) {
-            basses[i].draw(SMBass, bassSize, BassVAO, bassTex, camera);
+            basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, camera);
             basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Trout
         for (int i = 0; i < numBass; i++) {
-            trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTex, troutNormTex, camera);
+            trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, camera);
             trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Blue Betta
         for (int i = 0; i < numBetta; i++) {
-            blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTex, blueBettaNormTex, camera);
+            blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, camera);
             blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
+        // Angel Fish
+        for (int i = 0; i < numAngelFish; i++) {
+            angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, camera);
+            angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+        }
+
         // Submarine
-        submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTex, submarineNormTex, camera);
+        submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, camera);
         submarine.position.z = (submarine.position.z > 80.0f) ? (-80.0f) : (submarine.position.z + 0.5f);
 
         
