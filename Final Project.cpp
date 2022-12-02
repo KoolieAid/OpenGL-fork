@@ -40,23 +40,81 @@ vec3* cRotation;
 
 // Key Callbacks [Controls?/Debugging] // // // // // // // // // // // // // // // // // // // // // // // // 
 void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
-    switch (key) {
-    case GLFW_KEY_W: cRotation->z += 1.0f;
-        break;
-    case GLFW_KEY_S: cRotation->z -= 1.0f;
-        break;
-    case GLFW_KEY_A: cRotation->x -= 1.0f;
-        break;
-    case GLFW_KEY_D: cRotation->x += 1.0f;
-        break;
-    case GLFW_KEY_Q: cRotation->y += 1.0f;
-        break;
-    case GLFW_KEY_E: cRotation->y -= 1.0f;
-        break;
-    case GLFW_KEY_SPACE: 
-        break;
+    if (key == GLFW_KEY_W) {
+        if (!isOrtho) {
+            cRotation->z += 1.0f;
+        }
+        else {
+            camPos_y -= 0.3f;
+        }
     }
 
+    if (key == GLFW_KEY_S) {
+        if (!isOrtho) {
+            cRotation->z -= 1.0f;
+        }
+        else {
+            camPos_y += 0.3f;
+        }
+    }
+
+    if (key == GLFW_KEY_A) {
+        if (!isOrtho) {
+            cRotation->x -= 1.0f;
+        }
+        else {
+            camPos_x += 0.3f;
+        }
+    }
+
+    if (key == GLFW_KEY_D) {
+        if (!isOrtho) {
+            cRotation->x += 1.0f;
+        }
+        else {
+            camPos_x -= 0.3f;
+        }
+    }
+
+    if (key == GLFW_KEY_Q) {
+        if (!isOrtho) {
+            cRotation->y += 1.0f;
+        }
+        else {
+
+        }
+    }
+
+    if (key == GLFW_KEY_E) {
+        if (!isOrtho) {
+            cRotation->y -= 1.0f;
+        }
+        else {
+
+        }
+    }
+
+    if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+        if (isPOV3) {
+            isPOV3 = false;
+            isOrtho = false;
+            isPOV1 = true;
+            std::cout << "Camera is in 3rd POV - perspective view.\n";
+        }
+        else if (isPOV3 == false) {
+            isPOV3 = true;
+            isOrtho = false;
+            isPOV1 = false;
+            std::cout << "Camera is in 1st POV - perspective view.\n";
+        }
+    }
+
+    if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+        isOrtho = true;
+        isPOV3 = false;
+        isPOV1 = false;
+        std::cout << "Camera is in orthographic view.\n";
+    }
 }
 
 
