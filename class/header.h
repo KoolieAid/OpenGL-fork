@@ -156,7 +156,7 @@ class MyCamera
 		}
 
 		// Temp Methods (This class is passed onto the draw function of 3D object classes)
-		mat4 project()
+		/*mat4 project()
 		{
 			return perspective(radians(90.0f), width / height, 0.01f, 1000.0f);
 		}
@@ -164,7 +164,7 @@ class MyCamera
 		mat4 view()
 		{
 			return lookAt(position, center, up);
-		}
+		}*/
 
 		/*
 			The game should feature the following Camera’s
@@ -180,6 +180,47 @@ class MyCamera
 			- You can swap 1st / 3rd Person Views using the number 1 key.
 			- You can enter Top / Birds-eye view using the number 2 key.
 		*/
+};
+
+//Ortho Camera class that inherits from the camera base class
+class OrthoCamera :
+	public MyCamera {
+
+public:
+	OrthoCamera(vec3 pos, vec3 cen) {
+		position = pos;
+		center = cen;
+	}
+
+	mat4 orthoProject() {
+		return ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
+	}
+
+	mat4 orthoView()
+	{
+		return lookAt(position, center, up);
+	}
+};
+
+//Perspective Camera class that inherits from the camera base class
+class PerspectiveCamera :
+	public MyCamera {
+
+public:
+	PerspectiveCamera(vec3 pos, vec3 cen) {
+		position = pos;
+		center = cen;
+	}
+
+	mat4 persProject()
+	{
+		return perspective(radians(90.0f), width / height, 0.01f, 1000.0f);
+	}
+
+	mat4 persView()
+	{
+		return lookAt(position, position + center, up);
+	}
 };
 
 // // // // // // // // // // // // // // // // // // // // // // // // // 
