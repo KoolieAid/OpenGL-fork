@@ -1280,7 +1280,7 @@ public:
 		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
