@@ -141,7 +141,7 @@ class MyCamera
 		vec3 position = vec3(5.0f, 0.0f, 0.0f);
 		vec3 center = vec3(0.0f, 0.0f, 0.0f);
 
-		// Display Resolution
+		// Display Resolution (Default)
 		float width = 1920.0f;
 		float height = 1080.0f;
 
@@ -182,45 +182,39 @@ class MyCamera
 		*/
 };
 
-//Ortho Camera class that inherits from the camera base class
-class OrthoCamera :
-	public MyCamera {
+// Ortho Camera class that inherits from the camera base class
+class OrthoCamera : public MyCamera 
+{
+	public:
+		// Constructor
+		OrthoCamera(vec3 nposition, float nwidth, float nheight) : MyCamera(nposition, nwidth, nheight) {}
 
-public:
-	OrthoCamera(vec3 pos, vec3 cen) {
-		position = pos;
-		center = cen;
-	}
+		mat4 orthoProject() {
+			return ortho(-20.0f, 20.0f, -20.0f, 20.0f, -20.0f, 20.0f);
+		}
 
-	mat4 orthoProject() {
-		return ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
-	}
-
-	mat4 orthoView()
-	{
-		return lookAt(position, center, up);
-	}
+		mat4 orthoView()
+		{
+			return lookAt(position, center, up);
+		}
 };
 
-//Perspective Camera class that inherits from the camera base class
-class PerspectiveCamera :
-	public MyCamera {
+// Perspective Camera class that inherits from the camera base class
+class PerspectiveCamera : public MyCamera 
+{
+	public:
+		// Constructor
+		PerspectiveCamera(vec3 nposition, float nwidth, float nheight) : MyCamera(nposition, nwidth, nheight) {}
 
-public:
-	PerspectiveCamera(vec3 pos, vec3 cen) {
-		position = pos;
-		center = cen;
-	}
+		mat4 persProject()
+		{
+			return perspective(radians(60.0f), width / height, 0.01f, 50.0f);
+		}
 
-	mat4 persProject()
-	{
-		return perspective(radians(90.0f), width / height, 0.01f, 1000.0f);
-	}
-
-	mat4 persView()
-	{
-		return lookAt(position, position + center, up);
-	}
+		mat4 persView()
+		{
+			return lookAt(position, center + position, up);
+		}
 };
 
 // // // // // // // // // // // // // // // // // // // // // // // // // 
