@@ -385,7 +385,7 @@ class Bass : public MyObject
 		}
 
 		// Draw
-		void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+		void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 		{
 			// Shader Program
 			shader.activate();
@@ -397,10 +397,10 @@ class Bass : public MyObject
 
 			// Projection & View Matrices
 			unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-			glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+			glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 			unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 			// Texture
 			GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -510,7 +510,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -522,10 +522,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -640,7 +640,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -652,10 +652,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -770,7 +770,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -782,10 +782,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -900,7 +900,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -912,10 +912,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -1020,7 +1020,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -1032,10 +1032,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -1145,7 +1145,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -1157,10 +1157,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -1265,7 +1265,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
 	{
 		// Shader Program
 		shader.activate();
@@ -1277,7 +1277,7 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
