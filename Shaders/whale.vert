@@ -9,8 +9,13 @@ uniform mat4 project;
 uniform mat4 view;
 
 out vec2 texCoord;
+out vec3 normCoord;
+out vec3 fragPos;
 
 void main() {
 	gl_Position = project * view * transform * vec4(aPos, 1.0);
 	texCoord = aTex;
+	
+	normCoord = mat3(transpose(inverse(transform))) * aNorm;
+	fragPos = vec3(transform * vec4(aPos, 1.0));
 }

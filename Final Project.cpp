@@ -213,8 +213,12 @@ int main(void)
     MyCamera camera = MyCamera(vec3(5.0f, 0.0f, 10.0f), screenWidth, screenHeight);
     camera.center.z = 10.0f;
 
-    // Setup Lighting (Temp Setup)
+    // Setup Lighting
     cout << "> Loading Lighting Data...\n";
+
+    vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
+    DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 10.0f, -3.0f), light_color, 1.0f);
+    PointLight point_light = PointLight(vec3(10.0f, 3.0f, 0.0f), light_color, 1.0f);
 
 
     // Debugging Controls
@@ -239,11 +243,11 @@ int main(void)
 
 
         // Whale
-        whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, camera);
+        whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, camera, directional_light, point_light);
         whale.position.z = (whale.position.z > 600.0f) ? (-600.0f) : (whale.position.z + 0.40f);
 
         // Shark
-        shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, camera);
+        shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, camera, directional_light, point_light);
         shark.position.z = (shark.position.z > 80.0f) ? (-80.0f) : (shark.position.z + 0.15f);
 
         // Spade Fish
