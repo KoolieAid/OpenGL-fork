@@ -53,7 +53,7 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
         break;
     case GLFW_KEY_E: cRotation->y -= 1.0f;
         break;
-    case GLFW_KEY_SPACE: 
+    case GLFW_KEY_SPACE:
         break;
     }
 
@@ -131,7 +131,7 @@ int main(void)
     Whale whale = Whale(vec3(-200.0f, 0.0f, -100.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
     Submarine submarine = Submarine(vec3(-60.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
 
-   
+
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
     cout << "> Loading Vertex Data...\n";
 
@@ -220,10 +220,9 @@ int main(void)
     DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 10.0f, -3.0f), light_color, 1.0f);
     PointLight point_light = PointLight(vec3(10.0f, 3.0f, 0.0f), light_color, 1.0f);
 
-
     // Debugging Controls
     cRotation = &spadeFishes[0].rotation;
-   
+
 
     // For Loops Counters
     int numBass = basses.size();
@@ -284,7 +283,7 @@ int main(void)
         submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, camera);
         submarine.position.z = (submarine.position.z > 80.0f) ? (-80.0f) : (submarine.position.z + 0.5f);
 
-        
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

@@ -136,50 +136,50 @@ private:
 // Camera Class
 class MyCamera
 {
-	public:
-		// Position
-		vec3 position = vec3(5.0f, 0.0f, 0.0f);
-		vec3 center = vec3(0.0f, 0.0f, 0.0f);
+public:
+	// Position
+	vec3 position = vec3(5.0f, 0.0f, 0.0f);
+	vec3 center = vec3(0.0f, 0.0f, 0.0f);
 
-		// Display Resolution
-		float width = 1920.0f;
-		float height = 1080.0f;
+	// Display Resolution
+	float width = 1920.0f;
+	float height = 1080.0f;
 
-		// Constructors
-		MyCamera() {}
+	// Constructors
+	MyCamera() {}
 
-		MyCamera(vec3 nposition, float nwidth, float nheight)
-		{	
-			position = nposition;
-			height = nheight;
-			width = nwidth;
-		}
+	MyCamera(vec3 nposition, float nwidth, float nheight)
+	{
+		position = nposition;
+		height = nheight;
+		width = nwidth;
+	}
 
-		// Temp Methods (This class is passed onto the draw function of 3D object classes)
-		mat4 project()
-		{
-			return perspective(radians(90.0f), width / height, 0.01f, 1000.0f);
-		}
+	// Temp Methods (This class is passed onto the draw function of 3D object classes)
+	mat4 project()
+	{
+		return perspective(radians(90.0f), width / height, 0.01f, 1000.0f);
+	}
 
-		mat4 view()
-		{
-			return lookAt(position, center, up);
-		}
+	mat4 view()
+	{
+		return lookAt(position, center, up);
+	}
 
-		/*
-			The game should feature the following Camera’s
-			- 3rd Person Perspective Camera on the Player’s ship
-			- The view can be controlled by using the mouse, You cannot see as far in this view
-			- First Person Perspective Camera, You can see much further in this view, Cannot be controlled by the mouse
-			- You can only see objects in a single shade of color in this view (Similar to Sonar)
+	/*
+		The game should feature the following Camera’s
+		- 3rd Person Perspective Camera on the Player’s ship
+		- The view can be controlled by using the mouse, You cannot see as far in this view
+		- First Person Perspective Camera, You can see much further in this view, Cannot be controlled by the mouse
+		- You can only see objects in a single shade of color in this view (Similar to Sonar)
 
-			Orthographic Top / Birds-eye View Camera overlooking the whole area by default
-			- You cannot move the ship in this view
-			- You can pan the camera around using WASD
+		Orthographic Top / Birds-eye View Camera overlooking the whole area by default
+		- You cannot move the ship in this view
+		- You can pan the camera around using WASD
 
-			- You can swap 1st / 3rd Person Views using the number 1 key.
-			- You can enter Top / Birds-eye view using the number 2 key.
-		*/
+		- You can swap 1st / 3rd Person Views using the number 1 key.
+		- You can enter Top / Birds-eye view using the number 2 key.
+	*/
 };
 
 // // // // // // // // // // // // // // // // // // // // // // // // // 
@@ -193,217 +193,217 @@ class MyLight
 		- You can cycle through the intensity of the Point light using the F key (Low, Medium, High)
 	*/
 
-	public:
-		vec3 light_pos = vec3(0.0f, -10.0f, 0.0f);
-		vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
+public:
+	vec3 light_pos = vec3(0.0f, -10.0f, 0.0f);
+	vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
 
-		float ambient_str = 1.0f;
-		float spec_str = 5.0f;
-		float spec_phong = 16.0f;
-		float intensity = 0.2f;
+	float ambient_str = 1.0f;
+	float spec_str = 5.0f;
+	float spec_phong = 16.0f;
+	float intensity = 0.2f;
 
-		// Constructor
-		MyLight(vec3 nposition, vec3 ncolor, float nintensity) {
-			light_pos = nposition;
-			light_color = ncolor;
-			intensity = nintensity;
-		}
+	// Constructor
+	MyLight(vec3 nposition, vec3 ncolor, float nintensity) {
+		light_pos = nposition;
+		light_color = ncolor;
+		intensity = nintensity;
+	}
 };
 
 class DirectionalLight : public MyLight
 {
-	public:
-		// Constructor
-		DirectionalLight(vec3 nposition, vec3 ncolor, float nintensity) : MyLight(nposition, ncolor, nintensity) {}
+public:
+	// Constructor
+	DirectionalLight(vec3 nposition, vec3 ncolor, float nintensity) : MyLight(nposition, ncolor, nintensity) {}
 
 };
 
 class PointLight : public MyLight
 {
-	public:
-		PointLight(vec3 nposition, vec3 ncolor, float nintensity) : MyLight(nposition, ncolor, nintensity) {}
+public:
+	PointLight(vec3 nposition, vec3 ncolor, float nintensity) : MyLight(nposition, ncolor, nintensity) {}
 
 };
 
 // // // // // // // // // // // // // // // // // // // // // // // // // 
 
 // 3D Model Object Base Class
-class MyObject 
+class MyObject
 {
-	public:
-		// Position, Scale, Rotation (thetas)
-		vec3 position = vec3(0.0f, 0.0f, 0.0f);
-		vec3 scale = vec3(1.0f, 1.0f, 1.0f);
-		vec3 rotation = vec3(0.0f, 0.0f, 0.0f);
+public:
+	// Position, Scale, Rotation (thetas)
+	vec3 position = vec3(0.0f, 0.0f, 0.0f);
+	vec3 scale = vec3(1.0f, 1.0f, 1.0f);
+	vec3 rotation = vec3(0.0f, 0.0f, 0.0f);
 
-		// Constructors
-		MyObject() {}
+	// Constructors
+	MyObject() {}
 
-		MyObject(vec3 nposition, vec3 nscale, vec3 nrotation)
-		{
-			position = nposition;
-			scale = nscale;
-			rotation = nrotation;
-		}
+	MyObject(vec3 nposition, vec3 nscale, vec3 nrotation)
+	{
+		position = nposition;
+		scale = nscale;
+		rotation = nrotation;
+	}
 
-		// Virtual Functions
+	// Virtual Functions
 
-		// Load Vertex Data 
-		virtual vector<GLfloat> loadVertexData()
-		{
-			cout << "Load Vertex Data function is not defined!";
-			vector<GLfloat> temp;
-			return temp;
-		}
+	// Load Vertex Data 
+	virtual vector<GLfloat> loadVertexData()
+	{
+		cout << "Load Vertex Data function is not defined!";
+		vector<GLfloat> temp;
+		return temp;
+	}
 
-		// Load Texture Data
-		GLuint loadTextures()
-		{
-			cout << "Load Texture Data function is not defined!";
-			return def;
-		}
+	// Load Texture Data
+	GLuint loadTextures()
+	{
+		cout << "Load Texture Data function is not defined!";
+		return def;
+	}
 
-		// Setup Attrib Pointers 
-		virtual void setAttribPointer()
-		{
-			cout << "Set Attrib Pointers function is not defined!";
-		}
+	// Setup Attrib Pointers 
+	virtual void setAttribPointer()
+	{
+		cout << "Set Attrib Pointers function is not defined!";
+	}
 
-		// Draw
-		virtual void draw() 
-		{
-			cout << "Draw function is not defined!";
-		}
+	// Draw
+	virtual void draw()
+	{
+		cout << "Draw function is not defined!";
+	}
 
-	protected:
-		// Create Transformation Matrix
-		mat4 transform() 
-		{
-			mat4 transformation = mat4(1.0f);
+protected:
+	// Create Transformation Matrix
+	mat4 transform()
+	{
+		mat4 transformation = mat4(1.0f);
 
-			transformation = translate(transformation, position);
-			transformation = glm::scale(transformation, scale);
-			transformation = rotate(transformation, radians(rotation.x), rx);
-			transformation = rotate(transformation, radians(rotation.y), ry);
-			transformation = rotate(transformation, radians(rotation.z), rz);
-			
-			return transformation;
-		}
+		transformation = translate(transformation, position);
+		transformation = glm::scale(transformation, scale);
+		transformation = rotate(transformation, radians(rotation.x), rx);
+		transformation = rotate(transformation, radians(rotation.y), ry);
+		transformation = rotate(transformation, radians(rotation.z), rz);
+
+		return transformation;
+	}
 };
 
 // Bass Model Object Class
 class Bass : public MyObject
 {
-	public:
-		// Path
-		string path = "3D/bass.obj";
+public:
+	// Path
+	string path = "3D/bass.obj";
 
-		// Constructors
-		Bass() : MyObject() {}
+	// Constructors
+	Bass() : MyObject() {}
 
-		Bass(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
+	Bass(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
 
-		// Load Vertex Data 
-		vector<GLfloat> loadVertexData()
-		{
-			// Loader variables
-			vector<tinyobj::shape_t> shapes;
-			vector<tinyobj::material_t> materials;
-			string warning, error;
-			tinyobj::attrib_t attributes;
+	// Load Vertex Data 
+	vector<GLfloat> loadVertexData()
+	{
+		// Loader variables
+		vector<tinyobj::shape_t> shapes;
+		vector<tinyobj::material_t> materials;
+		string warning, error;
+		tinyobj::attrib_t attributes;
 
-			// Load the obj file
-			bool success = tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, path.c_str());
+		// Load the obj file
+		bool success = tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, path.c_str());
 
-			vector<GLfloat> fullVertexData;
-			for (int i = 0; i < shapes[0].mesh.indices.size(); i++) {
-				tinyobj::index_t vData = shapes[0].mesh.indices[i];
-				int vertexIndex = vData.vertex_index * 3;
-				int normIndex = vData.normal_index * 3;
-				int texIndex = vData.texcoord_index * 2;
+		vector<GLfloat> fullVertexData;
+		for (int i = 0; i < shapes[0].mesh.indices.size(); i++) {
+			tinyobj::index_t vData = shapes[0].mesh.indices[i];
+			int vertexIndex = vData.vertex_index * 3;
+			int normIndex = vData.normal_index * 3;
+			int texIndex = vData.texcoord_index * 2;
 
-				// Get X Y Z
-				fullVertexData.push_back(attributes.vertices[vertexIndex]);
-				fullVertexData.push_back(attributes.vertices[vertexIndex + 1]);
-				fullVertexData.push_back(attributes.vertices[vertexIndex + 2]);
+			// Get X Y Z
+			fullVertexData.push_back(attributes.vertices[vertexIndex]);
+			fullVertexData.push_back(attributes.vertices[vertexIndex + 1]);
+			fullVertexData.push_back(attributes.vertices[vertexIndex + 2]);
 
-				// Get A B C
-				fullVertexData.push_back(attributes.normals[normIndex]);
-				fullVertexData.push_back(attributes.normals[normIndex + 1]);
-				fullVertexData.push_back(attributes.normals[normIndex + 2]);
+			// Get A B C
+			fullVertexData.push_back(attributes.normals[normIndex]);
+			fullVertexData.push_back(attributes.normals[normIndex + 1]);
+			fullVertexData.push_back(attributes.normals[normIndex + 2]);
 
-				// Get U V
-				fullVertexData.push_back(attributes.texcoords[texIndex]);
-				fullVertexData.push_back(attributes.texcoords[texIndex + 1]);
-			}
-
-			return fullVertexData;
+			// Get U V
+			fullVertexData.push_back(attributes.texcoords[texIndex]);
+			fullVertexData.push_back(attributes.texcoords[texIndex + 1]);
 		}
 
-		// Load Textures
-		MyTextureMap loadTextures()
-		{
-			MyTextureMap map;
+		return fullVertexData;
+	}
 
-			// Base Texture
-			int img_width, img_height, color_channels;
-			unsigned char* tex_bytes = stbi_load("Textures/Bass/BassTexture.png", &img_width, &img_height, &color_channels, 0);
-			glGenTextures(1, &map.baseTex);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, map.baseTex);
+	// Load Textures
+	MyTextureMap loadTextures()
+	{
+		MyTextureMap map;
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
-			glGenerateMipmap(GL_TEXTURE_2D);
-			stbi_image_free(tex_bytes);
+		// Base Texture
+		int img_width, img_height, color_channels;
+		unsigned char* tex_bytes = stbi_load("Textures/Bass/BassTexture.png", &img_width, &img_height, &color_channels, 0);
+		glGenTextures(1, &map.baseTex);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
-			return map;
-		}
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(tex_bytes);
 
-		// Setup Attrib Pointers 
-		void setAttribPointer()
-		{
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
-			glEnableVertexAttribArray(0);
+		return map;
+	}
 
-			GLintptr abcptr = 3 * sizeof(GL_FLOAT);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)abcptr);
-			glEnableVertexAttribArray(1);
+	// Setup Attrib Pointers 
+	void setAttribPointer()
+	{
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
+		glEnableVertexAttribArray(0);
 
-			GLintptr uvptr = 6 * sizeof(GL_FLOAT);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)uvptr);
-			glEnableVertexAttribArray(2);
-		}
+		GLintptr abcptr = 3 * sizeof(GL_FLOAT);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)abcptr);
+		glEnableVertexAttribArray(1);
+
+		GLintptr uvptr = 6 * sizeof(GL_FLOAT);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)uvptr);
+		glEnableVertexAttribArray(2);
+	}
+
+	// Draw
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	{
+		// Shader Program
+		shader.activate();
+
+		// Create Transformation Matrix
+		mat4 transformation = transform();
+		unsigned int transformLoc = glGetUniformLocation(shader.shaderProgram, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
+
+		// Projection & View Matrices
+		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+
+		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+
+		// Texture
+		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, map.baseTex);
+		glUniform1i(tex0Address, 0);
+
+		// Bind
+		glBindVertexArray(VAO);
 
 		// Draw
-		void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
-		{
-			// Shader Program
-			shader.activate();
-
-			// Create Transformation Matrix
-			mat4 transformation = transform();
-			unsigned int transformLoc = glGetUniformLocation(shader.shaderProgram, "transform");
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
-
-			// Projection & View Matrices
-			unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-			glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
-
-			unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
-
-			// Texture
-			GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, map.baseTex);
-			glUniform1i(tex0Address, 0);
-
-			// Bind
-			glBindVertexArray(VAO);
-
-			// Draw
-			glDrawArrays(GL_TRIANGLES, 0, vsize / 8);
-		}
+		glDrawArrays(GL_TRIANGLES, 0, vsize / 8);
+	}
 };
 
 // Shark Model Object Class
@@ -684,7 +684,11 @@ public:
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
 
-		//// Direct Light
+		// Camera
+		GLuint cameraPosLoc = glGetUniformLocation(shader.shaderProgram, "cameraPos");
+		glUniform3fv(cameraPosLoc, 1, glm::value_ptr(camera.position));
+
+		// Direct Light
 		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
 		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
 
@@ -697,15 +701,21 @@ public:
 		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
 		glUniform1f(dirintensityStrLoc, direct.intensity);
 
-		//// Point Light
+		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
 
 		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
 		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntspecStrLoc = glGetUniformLocation(shader.shaderProgram, "pntspecStr");
+		glUniform1f(pntspecStrLoc, point.spec_str);
+
+		GLuint pntspecPhongLoc = glGetUniformLocation(shader.shaderProgram, "pntspecPhong");
+		glUniform1f(pntspecPhongLoc, point.spec_phong);
 
 		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
 		glUniform1f(pntintensityStrLoc, point.intensity);
@@ -1363,7 +1373,7 @@ public:
 
 	// Constructors (Inherits MyObject)
 	SkyBox() {}
-	
+
 
 	// Load Textures
 	GLuint loadTextures()
@@ -1375,8 +1385,8 @@ public:
 // // // // // // // // // // // // // // // // // // // // // // // // // 
 
 /*	Others Materials
-* 
-	https://antongerdelan.net/colour/ :: float vector color picker	
+*
+	https://antongerdelan.net/colour/ :: float vector color picker
 */
 
 
