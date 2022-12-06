@@ -341,6 +341,9 @@ int main(void)
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
 
+            // Disables blending
+            glDisable(GL_BLEND);
+
             //Set up / Update camera position based on player's position
             POV3Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z - 5.0f);
 
@@ -389,6 +392,10 @@ int main(void)
 
         // Ortho Camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         else if (isOrtho) {
+
+            // Disables blending
+            glDisable(GL_BLEND);
+
             // Whale
             whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, orthoCam.orthoProject(), orthoCam.orthoView());
             whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
