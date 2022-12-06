@@ -21,12 +21,16 @@ uniform vec3 cameraPos;
 
 in vec2 texCoord;
 in vec3 normCoord;
+in mat3 TBN;
 in vec3 fragPos;
 out vec4 FragColor;
 
 void main() {	
+	vec3 normal = texture(tex1, texCoord).rgb;
+
 	// Normalize Values
-	vec3 normal = normalize(normCoord);
+	normal = normalize(normal * 2.0 - 1.0);
+    normal = normalize(TBN * normal);
 	vec3 dirlightDir = normalize(dirlightPos - fragPos);
 	vec3 pntlightDir = normalize(pntlightPos - fragPos);
 
@@ -64,6 +68,7 @@ void main() {
     float quadratic = 0.032f;
     float distance = length(pntlightPos - fragPos);
     float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
+
 	pntambient *= attenuation;
     pntdiffuse *= attenuation;
     pntspec *= attenuation;

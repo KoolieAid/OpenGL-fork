@@ -197,7 +197,7 @@ public:
 	vec3 light_pos = vec3(0.0f, -10.0f, 0.0f);
 	vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
 
-	float ambient_str = 1.0f;
+	float ambient_str = 0.2f;
 	float spec_str = 5.0f;
 	float spec_phong = 16.0f;
 	float intensity = 0.2f;
@@ -372,6 +372,14 @@ public:
 		GLintptr uvptr = 6 * sizeof(GL_FLOAT);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)uvptr);
 		glEnableVertexAttribArray(2);
+
+		GLintptr tangentPtr = 8 * sizeof(float);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(GL_FLOAT), (void*)tangentPtr);
+		glEnableVertexAttribArray(3);
+
+		GLintptr bitangentPtr = 11 * sizeof(float);
+		glVertexAttribPointer(4, 3,	GL_FLOAT, GL_FALSE, 14 * sizeof(GL_FLOAT), (void*)bitangentPtr);
+		glEnableVertexAttribArray(4);
 	}
 
 	// Draw
