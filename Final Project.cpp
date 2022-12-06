@@ -435,6 +435,12 @@ int main(void)
         // 1st POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         else if (isPOV1) {
 
+            // Apply sonar view through blending
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_CONSTANT_COLOR);
+            glBlendEquation(GL_FUNC_ADD);
+            glBlendColor(1.000, 0.012, 0.012, 1.000);
+
             //Set up / Update camera position based on player's position
             POV1Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z - 10.0f);
 
