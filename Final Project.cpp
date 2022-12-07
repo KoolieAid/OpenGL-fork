@@ -217,8 +217,8 @@ int main(void)
     cout << "> Loading Lighting Data...\n";
 
     vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
-    DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 10.0f, -3.0f), light_color, 1.0f);
-    PointLight point_light = PointLight(vec3(10.0f, 3.0f, 0.0f), light_color, 1.0f);
+    DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 50.0f, 0.0f), light_color, 1.0f);
+    PointLight point_light = PointLight(vec3(0.0f, 30.0f, -100.0f), light_color, 1.0f);
 
     // Debugging Controls
     cRotation = &spadeFishes[0].rotation;
@@ -251,36 +251,36 @@ int main(void)
 
         // Spade Fish
         for (int i = 0; i < numSpadeFish; i++) {
-            spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, camera);
+            spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, camera, directional_light, point_light);
             spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Bass
         for (int i = 0; i < numBass; i++) {
-            basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, camera);
+            basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, camera, directional_light, point_light);
             basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Trout
         for (int i = 0; i < numBass; i++) {
-            trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, camera);
+            trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, camera, directional_light, point_light);
             trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Blue Betta
         for (int i = 0; i < numBetta; i++) {
-            blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, camera);
+            blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, camera, directional_light, point_light);
             blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Angel Fish
         for (int i = 0; i < numAngelFish; i++) {
-            angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, camera);
+            angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, camera, directional_light, point_light);
             angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
         }
 
         // Submarine
-        submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, camera);
+        submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, camera, directional_light, point_light);
         submarine.position.z = (submarine.position.z > 80.0f) ? (-80.0f) : (submarine.position.z + 0.5f);
 
 

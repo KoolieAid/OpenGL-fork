@@ -383,7 +383,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -405,6 +405,32 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
+
+		// Direct Light
+		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
+		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
+
+		GLuint dirlightColorLoc = glGetUniformLocation(shader.shaderProgram, "dirlightColor");
+		glUniform3fv(dirlightColorLoc, 1, glm::value_ptr(direct.light_color));
+
+		GLuint dirambientStrLoc = glGetUniformLocation(shader.shaderProgram, "dirambientStr");
+		glUniform1f(dirambientStrLoc, direct.ambient_str);
+
+		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
+		glUniform1f(dirintensityStrLoc, direct.intensity);
+
+		// Point Light
+		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+
+		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
+		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
+
+		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
+		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
+		glUniform1f(pntintensityStrLoc, point.intensity);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -830,7 +856,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -857,6 +883,38 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
+
+		// Direct Light
+		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
+		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
+
+		GLuint dirlightColorLoc = glGetUniformLocation(shader.shaderProgram, "dirlightColor");
+		glUniform3fv(dirlightColorLoc, 1, glm::value_ptr(direct.light_color));
+
+		GLuint dirambientStrLoc = glGetUniformLocation(shader.shaderProgram, "dirambientStr");
+		glUniform1f(dirambientStrLoc, direct.ambient_str);
+
+		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
+		glUniform1f(dirintensityStrLoc, direct.intensity);
+
+		// Point Light
+		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+
+		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
+		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
+
+		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
+		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntspecStrLoc = glGetUniformLocation(shader.shaderProgram, "pntspecStr");
+		glUniform1f(pntspecStrLoc, point.spec_str);
+
+		GLuint pntspecPhongLoc = glGetUniformLocation(shader.shaderProgram, "pntspecPhong");
+		glUniform1f(pntspecPhongLoc, point.spec_phong);
+
+		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
+		glUniform1f(pntintensityStrLoc, point.intensity);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -960,7 +1018,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -987,6 +1045,32 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
+
+		// Direct Light
+		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
+		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
+
+		GLuint dirlightColorLoc = glGetUniformLocation(shader.shaderProgram, "dirlightColor");
+		glUniform3fv(dirlightColorLoc, 1, glm::value_ptr(direct.light_color));
+
+		GLuint dirambientStrLoc = glGetUniformLocation(shader.shaderProgram, "dirambientStr");
+		glUniform1f(dirambientStrLoc, direct.ambient_str);
+
+		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
+		glUniform1f(dirintensityStrLoc, direct.intensity);
+
+		// Point Light
+		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+
+		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
+		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
+
+		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
+		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
+		glUniform1f(pntintensityStrLoc, point.intensity);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -1080,7 +1164,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -1102,6 +1186,32 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
+
+		// Direct Light
+		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
+		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
+
+		GLuint dirlightColorLoc = glGetUniformLocation(shader.shaderProgram, "dirlightColor");
+		glUniform3fv(dirlightColorLoc, 1, glm::value_ptr(direct.light_color));
+
+		GLuint dirambientStrLoc = glGetUniformLocation(shader.shaderProgram, "dirambientStr");
+		glUniform1f(dirambientStrLoc, direct.ambient_str);
+
+		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
+		glUniform1f(dirintensityStrLoc, direct.intensity);
+
+		// Point Light
+		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+
+		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
+		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
+
+		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
+		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
+		glUniform1f(pntintensityStrLoc, point.intensity);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -1205,7 +1315,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -1232,6 +1342,38 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
+
+		// Direct Light
+		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
+		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
+
+		GLuint dirlightColorLoc = glGetUniformLocation(shader.shaderProgram, "dirlightColor");
+		glUniform3fv(dirlightColorLoc, 1, glm::value_ptr(direct.light_color));
+
+		GLuint dirambientStrLoc = glGetUniformLocation(shader.shaderProgram, "dirambientStr");
+		glUniform1f(dirambientStrLoc, direct.ambient_str);
+
+		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
+		glUniform1f(dirintensityStrLoc, direct.intensity);
+
+		// Point Light
+		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+
+		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
+		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
+
+		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
+		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntspecStrLoc = glGetUniformLocation(shader.shaderProgram, "pntspecStr");
+		glUniform1f(pntspecStrLoc, point.spec_str);
+
+		GLuint pntspecPhongLoc = glGetUniformLocation(shader.shaderProgram, "pntspecPhong");
+		glUniform1f(pntspecPhongLoc, point.spec_phong);
+
+		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
+		glUniform1f(pntintensityStrLoc, point.intensity);
 
 		// Bind
 		glBindVertexArray(VAO);
@@ -1325,7 +1467,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -1347,6 +1489,32 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 		glUniform1i(tex0Address, 0);
+
+		// Direct Light
+		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
+		glUniform3fv(dirlightPosLoc, 1, glm::value_ptr(direct.light_pos));
+
+		GLuint dirlightColorLoc = glGetUniformLocation(shader.shaderProgram, "dirlightColor");
+		glUniform3fv(dirlightColorLoc, 1, glm::value_ptr(direct.light_color));
+
+		GLuint dirambientStrLoc = glGetUniformLocation(shader.shaderProgram, "dirambientStr");
+		glUniform1f(dirambientStrLoc, direct.ambient_str);
+
+		GLuint dirintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "dirintensityStr");
+		glUniform1f(dirintensityStrLoc, direct.intensity);
+
+		// Point Light
+		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+
+		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
+		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
+
+		GLuint pntambientStrLoc = glGetUniformLocation(shader.shaderProgram, "pntambientStr");
+		glUniform1f(pntambientStrLoc, point.ambient_str);
+
+		GLuint pntintensityStrLoc = glGetUniformLocation(shader.shaderProgram, "pntintensityStr");
+		glUniform1f(pntintensityStrLoc, point.intensity);
 
 		// Bind
 		glBindVertexArray(VAO);
