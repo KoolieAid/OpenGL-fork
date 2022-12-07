@@ -100,11 +100,11 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
-        case GLFW_KEY_W: POV3Control->position.z += moveSpeed; playerPos.x += 0.2f;
+        case GLFW_KEY_W: POV3Control->position.z += moveSpeed; playerPos.z += 0.2f;
             break;
         case GLFW_KEY_A: POV3Control->position.x -= moveSpeed;
             break;
-        case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; playerPos.x -= 0.2f;
+        case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; playerPos.z -= 0.2f;
             break;
         case GLFW_KEY_D: POV3Control->position.x += moveSpeed;
             break;
@@ -232,11 +232,6 @@ int main(void)
         spadeFishes.push_back(SpadeFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(spadeFishScale), vec3(0.0f, 90.0f, 2.0f)));
     }
 
-    /*vector<AngelFish> angelFishes;
-    for (int i = 0; i < 12; i++) {
-        angelFishes.push_back(AngelFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(angelFishScale), vec3(0.0f, -90.0f, 2.0f)));
-    }*/
-
     vector<Trout> trouts;
     for (int i = 0; i < 12; i++) {
         trouts.push_back(Trout(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(troutScale), vec3(0.0f, 0.0f, 2.0f)));
@@ -336,7 +331,6 @@ int main(void)
     POV1Cam.center = vec3(0.0f);
     POV1Control = &POV1Cam;
 
-
     // Setup Lighting
     cout << "> Loading Lighting Data...\n";
 
@@ -349,7 +343,6 @@ int main(void)
     int numBetta = blueBettas.size();
     int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
-    //int numAngelFish = angelFish.size();
 
 
     SkyBox skybox = SkyBox();
@@ -365,7 +358,6 @@ int main(void)
 
         // Set-up / update player's position
         angelFish.position = playerPos;
-        //angelFish.position = vec3(0.0f, 0.0f, 5.0f);
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
@@ -376,7 +368,7 @@ int main(void)
             skybox.draw(SMSkyBox, skyboxTex, POV3Cam.persProject(), POV3Cam.persViewPOV3());
 
             //Set up / Update camera position based on player's position
-            POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y, angelFish.position.z - 3.0f);
+            POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y + 0.1f, angelFish.position.z - 1.0f);
 
             // Angel fish = player
             angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
@@ -416,12 +408,6 @@ int main(void)
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
-
-            /*// Angel Fish
-            for (int i = 0; i < numAngelFish; i++) {
-                angelFishes[i].draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-                angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
-            }*/
         }
 
         // Ortho Camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -468,12 +454,6 @@ int main(void)
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
-
-            /*// Angel Fish
-            for (int i = 0; i < numAngelFish; i++) {
-                angelFishes[i].draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-                angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
-            }*/
         }
 
         // 1st POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -497,7 +477,7 @@ int main(void)
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-            //shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
+            shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // Submarine
             submarine.draw(SMLitTexturedNormap, submarineSize, SubmarineVAO, submarineTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
@@ -526,12 +506,7 @@ int main(void)
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
-
-            /*// Angel Fish
-            for (int i = 0; i < numAngelFish; i++) {
-                angelFishes[i].draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-                angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
-            }*/
+        }
         
         // Light Intensity
         switch (intensity_level) {
@@ -540,7 +515,7 @@ int main(void)
             case 3: point_light.intensity = 3.0f; break;
         }
 
-        }
+        
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
