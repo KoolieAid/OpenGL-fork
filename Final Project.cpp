@@ -331,7 +331,7 @@ int main(void)
     PointLight point_light = PointLight(vec3(0.0f, 30.0f, -100.0f), light_color, 1.0f);
 
     // Debugging Controls
-    cRotation = &spadeFishes[0].rotation;
+    //cRotation = &spadeFishes[0].rotation;
 
 
     // For Loops Counters

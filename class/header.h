@@ -423,7 +423,7 @@ public:
 	}
 
 	// Draw
-	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, MyCamera camera, DirectionalLight direct, PointLight point)
+	void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view, DirectionalLight direct, PointLight point)
 	{
 		// Shader Program
 		shader.activate();
@@ -435,10 +435,10 @@ public:
 
 		// Projection & View Matrices
 		unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(camera.project()));
+		glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.view()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// Texture
 		GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
@@ -476,34 +476,7 @@ public:
 		glBindVertexArray(VAO);
 
 		// Draw
-		void draw(MyShader shader, float vsize, GLuint VAO, MyTextureMap map, mat4 projection, mat4 view)
-		{
-			// Shader Program
-			shader.activate();
-
-			// Create Transformation Matrix
-			mat4 transformation = transform();
-			unsigned int transformLoc = glGetUniformLocation(shader.shaderProgram, "transform");
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformation));
-
-			// Projection & View Matrices
-			unsigned int projectLoc = glGetUniformLocation(shader.shaderProgram, "project");
-			glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-			unsigned int viewLoc = glGetUniformLocation(shader.shaderProgram, "view");
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-			// Texture
-			GLuint tex0Address = glGetUniformLocation(shader.shaderProgram, "tex0");
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, map.baseTex);
-			glUniform1i(tex0Address, 0);
-
-			// Bind
-			glBindVertexArray(VAO);
-
-			// Draw
-			glDrawArrays(GL_TRIANGLES, 0, vsize / 8);
+		glDrawArrays(GL_TRIANGLES, 0, vsize / 8);
 		}
 };
 
@@ -784,10 +757,6 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
-
-		// Camera
-		GLuint cameraPosLoc = glGetUniformLocation(shader.shaderProgram, "cameraPos");
-		glUniform3fv(cameraPosLoc, 1, glm::value_ptr(camera.position));
 
 		// Direct Light
 		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");
