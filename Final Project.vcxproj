@@ -144,6 +144,13 @@
   <ItemGroup>
     <Text Include="object_summary.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Downloads\uw_sky\uw_sky.shader" />
+    <None Include="Shaders\lit_textured.frag" />
+    <None Include="Shaders\lit_textured.vert" />
+    <None Include="Shaders\lit_textured_normap.frag" />
+    <None Include="Shaders\lit_textured_normap.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
