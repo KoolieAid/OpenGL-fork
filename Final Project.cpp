@@ -449,7 +449,7 @@ int main(void)
             glBlendColor(1.000, 0.012, 0.012, 1.000);
 
             //Set up / Update camera position based on player's position
-            POV1Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z - 10.0f);
+            POV1Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z + 2.0f);
 
             // Whale
             whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persView());
