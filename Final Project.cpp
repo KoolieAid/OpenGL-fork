@@ -60,13 +60,13 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
             isPOV3 = false;
             isOrtho = false;
             isPOV1 = true;
-            std::cout << "Camera is in 3rd POV - perspective view.\n";
+            std::cout << "Camera is in 1st POV - perspective view.\n";
         }
         else if (isPOV3 == false) {
             isPOV3 = true;
             isOrtho = false;
             isPOV1 = false;
-            std::cout << "Camera is in 1st POV - perspective view.\n";
+            std::cout << "Camera is in 3rd POV - perspective view.\n";
         }
     } else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
         isOrtho = true;
@@ -146,9 +146,6 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
         direction.z = sin(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
 
         POV3Control->center = glm::normalize(direction);
-    }
-    else if (isPOV1) {
-        //POV1Control->center = glm::normalize(direction);
     }
 }
 
@@ -338,6 +335,9 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Set-up / update player's position
+        shark.position = vec3(0.0f, 0.0f, -5.0f);
+
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
 
@@ -348,44 +348,44 @@ int main(void)
             POV3Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z - 5.0f);
 
             // Whale
-            whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persView());
+            whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
             whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
 
             // Shark
-            shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, POV3Cam.persProject(), POV3Cam.persView());
+            shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
             //shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // Submarine
-            submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, POV3Cam.persProject(), POV3Cam.persView());
+            submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
             submarine.position.z = (submarine.position.z > 50.0f) ? (-50.0f) : (submarine.position.z + 0.5f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
-                spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, POV3Cam.persProject(), POV3Cam.persView());
+                spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
                 spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Bass
             for (int i = 0; i < numBass; i++) {
-                basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, POV3Cam.persProject(), POV3Cam.persView());
+                basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
                 basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Trout
             for (int i = 0; i < numBass; i++) {
-                trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, POV3Cam.persProject(), POV3Cam.persView());
+                trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
                 trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Blue Betta
             for (int i = 0; i < numBetta; i++) {
-                blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV3Cam.persProject(), POV3Cam.persView());
+                blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Angel Fish
             for (int i = 0; i < numAngelFish; i++) {
-                angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persView());
+                angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3());
                 angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
         }
@@ -452,44 +452,44 @@ int main(void)
             POV1Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z + 2.0f);
 
             // Whale
-            whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persView());
+            whale.draw(SMWhale, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
             whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
 
             // Shark
-            shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, POV1Cam.persProject(), POV1Cam.persView());
+            shark.draw(SMShark, sharkSize, SharkVAO, sharkTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
             //shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // Submarine
-            submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, POV1Cam.persProject(), POV1Cam.persView());
+            submarine.draw(SMSubmarine, submarineSize, SubmarineVAO, submarineTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
             submarine.position.z = (submarine.position.z > 50.0f) ? (-50.0f) : (submarine.position.z + 0.5f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
-                spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, POV1Cam.persProject(), POV1Cam.persView());
+                spadeFishes[i].draw(SMSailFish, spadeFishSize, SpadeFishVAO, spadeFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
                 spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Bass
             for (int i = 0; i < numBass; i++) {
-                basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, POV1Cam.persProject(), POV1Cam.persView());
+                basses[i].draw(SMBass, bassSize, BassVAO, bassTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
                 basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Trout
             for (int i = 0; i < numBass; i++) {
-                trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, POV1Cam.persProject(), POV1Cam.persView());
+                trouts[i].draw(SMTrout, troutSize, TroutVAO, troutTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
                 trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Blue Betta
             for (int i = 0; i < numBetta; i++) {
-                blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV1Cam.persProject(), POV1Cam.persView());
+                blueBettas[i].draw(SMBlueBetta, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
             // Angel Fish
             for (int i = 0; i < numAngelFish; i++) {
-                angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persView());
+                angelFishes[i].draw(SMAngelFish, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1());
                 angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
         }

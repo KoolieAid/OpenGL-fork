@@ -211,9 +211,14 @@ class PerspectiveCamera : public MyCamera
 			return perspective(radians(60.0f), width / height, 0.01f, 50.0f);
 		}
 
-		mat4 persView()
+		mat4 persViewPOV3()
 		{
 			return lookAt(position, center + position, up);
+		}
+
+		mat4 persViewPOV1()
+		{
+			return lookAt(position, center, up);
 		}
 };
 
