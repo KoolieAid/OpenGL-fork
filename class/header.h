@@ -190,7 +190,7 @@ class OrthoCamera : public MyCamera
 		OrthoCamera(vec3 nposition, float nwidth, float nheight) : MyCamera(nposition, nwidth, nheight) {}
 
 		mat4 orthoProject() {
-			return ortho(-20.0f, 20.0f, -20.0f, 20.0f, -20.0f, 20.0f);
+			return ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f);
 		}
 
 		mat4 orthoView()
