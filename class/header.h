@@ -1634,8 +1634,8 @@ public:
 	{
 		GLuint texture;
 		std::string faces[]{
-			"Skybox/water_rt.jpg",
 			"Skybox/water_lf.jpg",
+			"Skybox/water_rt.jpg",
 			"Skybox/water_up.jpg",
 			"Skybox/water_dn.jpg",
 			"Skybox/water_ft.jpg",
