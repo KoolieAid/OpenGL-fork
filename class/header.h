@@ -1576,21 +1576,129 @@ class Player : public MyObject
 	*/
 };
 
+const float skyboxVertices[24] = {
+	-1.f, -1.f, 1.f, //0
+	1.f, -1.f, 1.f,  //1
+	1.f, -1.f, -1.f, //2
+	-1.f, -1.f, -1.f,//3
+	-1.f, 1.f, 1.f,  //4
+	1.f, 1.f, 1.f,   //5
+	1.f, 1.f, -1.f,  //6
+	-1.f, 1.f, -1.f  //7
+};
 
-class SkyBox : public MyObject
+const unsigned int skyboxIndices[36] = {
+		1,2,6,
+		6,5,1,
+
+		0,4,7,
+		7,3,0,
+
+		4,5,6,
+		6,7,4,
+
+		0,3,2,
+		2,1,0,
+
+		0,1,5,
+		5,4,0,
+
+		3,7,6,
+		6,2,3
+};
+
+class SkyBox
 {
 public:
-	// Path
-	string path = "3D/skybox.obj";
+	GLuint VAO, VBO, EBO;
 
-	// Constructors (Inherits MyObject)
-	SkyBox() {}
+	// Setup Buffers
+	SkyBox()
+	{
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
 
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
 
-	// Load Textures
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GL_INT) * 36, &skyboxIndices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+	}
+
+	// Load Cubemap Textures
 	GLuint loadTextures()
 	{
+		GLuint texture;
+		std::string faces[]{
+			"Skybox/water_rt.jpg",
+			"Skybox/water_lf.jpg",
+			"Skybox/water_up.jpg",
+			"Skybox/water_dn.jpg",
+			"Skybox/water_ft.jpg",
+			"Skybox/water_bk.jpg"
+		};
 
+		glGenTextures(1, &texture);
+		;
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		for (unsigned int i = 0; i < 6; i++) {
+			int w, h, skyCChannel;
+			stbi_set_flip_vertically_on_load(false);
+
+			unsigned char* data = stbi_load(faces[i].c_str(), &w, &h, &skyCChannel, 4);
+
+			if (data) {
+
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+				cout << w << "-" << h << "\n";
+				stbi_image_free(data);
+			}
+		}
+
+		stbi_set_flip_vertically_on_load(true);
+		return texture;
+	}
+
+	// Draw SkyBox
+	void draw(MyShader shader, GLuint texture, mat4 projection, mat4 view)
+	{
+		// Shader Program
+		shader.activate();
+
+		// Adjust Depth
+		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_LEQUAL);
+
+		// Clean View Matrix
+		mat4 skyView = mat4(mat3(view));
+
+		// View & Projection Matrices
+		GLuint skyboxViewLoc = glGetUniformLocation(shader.shaderProgram, "view");
+		glUniformMatrix4fv(skyboxViewLoc, 1, GL_FALSE, value_ptr(skyView));
+
+		GLuint skyboxProjectLoc = glGetUniformLocation(shader.shaderProgram, "project");
+		glUniformMatrix4fv(skyboxProjectLoc, 1, GL_FALSE, value_ptr(projection));
+
+		// Draw
+		glBindVertexArray(VAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+		// Readjust Depth
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LESS);
 	}
 };
 

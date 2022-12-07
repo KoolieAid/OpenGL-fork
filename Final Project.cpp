@@ -316,6 +316,7 @@ int main(void)
 
     MyShader SMLitTexturedNormap = MyShader("Shaders/lit_textured_normap.vert", "Shaders/lit_textured_normap.frag");
     MyShader SMLitTextured = MyShader("Shaders/lit_textured.vert", "Shaders/lit_textured.frag");
+    MyShader SMSkyBox = MyShader("Shaders/skybox.vert", "Shaders/skybox.frag");
 
     // Setup Camera (Temp Setup)
     cout << "> Loading Camera Data...\n";
@@ -343,16 +344,16 @@ int main(void)
     DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 50.0f, 0.0f), light_color, 1.0f);
     PointLight point_light = PointLight(vec3(0.0f, 30.0f, -100.0f), light_color, 1.0f);
 
-    // Debugging Controls
-    //cRotation = &spadeFishes[0].rotation;
-
-
     // For Loops Counters
     int numBass = basses.size();
     int numBetta = blueBettas.size();
     int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
     //int numAngelFish = angelFish.size();
+
+
+    SkyBox skybox = SkyBox();
+    GLuint skyboxTex = skybox.loadTextures();
 
 
     cout << "> Drawing...\n";
@@ -371,6 +372,8 @@ int main(void)
 
             // Disables blending
             glDisable(GL_BLEND);
+
+            skybox.draw(SMSkyBox, skyboxTex, POV3Cam.persProject(), POV3Cam.persViewPOV3());
 
             //Set up / Update camera position based on player's position
             POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y, angelFish.position.z - 3.0f);
