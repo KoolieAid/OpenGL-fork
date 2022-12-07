@@ -30,6 +30,9 @@ using namespace glm;
 
 // Global Parameters & Settings // // // // // // // // // // // // // // // // // // // // // // // // 
 
+// For controlling player's position
+vec3 playerPos = vec3(0.0f, 0.0f, -5.0f);
+
 // For controlling the camera view
 bool isOrtho = false;
 bool isPOV3 = true;
@@ -81,26 +84,34 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
     // Camera Movement
     if (isPOV3) {                                                       // 3rd Perspective
         switch (key) {
-            case GLFW_KEY_W: POV3Control->position.z += moveSpeed;
+            case GLFW_KEY_W: POV3Control->position.z += moveSpeed; playerPos.z += 0.2f;
                 break;
             case GLFW_KEY_A: POV3Control->position.x -= moveSpeed;
                 break;
-            case GLFW_KEY_S: POV3Control->position.z -= moveSpeed;
+            case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; playerPos.z -= 0.2f;
                 break;
             case GLFW_KEY_D: POV3Control->position.x += moveSpeed;
+                break;
+            case GLFW_KEY_Q: POV3Control->position.z -= moveSpeed; playerPos.y += 0.2f;
+                break;
+            case GLFW_KEY_E: POV3Control->position.x += moveSpeed; playerPos.y -= 0.2f;
                 break;
         }
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
-            case GLFW_KEY_W: POV1Control->position.z += moveSpeed;
-                break;
-            case GLFW_KEY_A: POV1Control->position.x -= moveSpeed;
-                break;
-            case GLFW_KEY_S: POV1Control->position.z -= moveSpeed;
-                break;
-            case GLFW_KEY_D: POV1Control->position.x += moveSpeed;
-                break;
+        case GLFW_KEY_W: POV3Control->position.z += moveSpeed; playerPos.x += 0.2f;
+            break;
+        case GLFW_KEY_A: POV3Control->position.x -= moveSpeed;
+            break;
+        case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; playerPos.x -= 0.2f;
+            break;
+        case GLFW_KEY_D: POV3Control->position.x += moveSpeed;
+            break;
+        case GLFW_KEY_Q: POV3Control->position.z -= moveSpeed; playerPos.y += 0.2f;
+            break;
+        case GLFW_KEY_E: POV3Control->position.x += moveSpeed; playerPos.y -= 0.2f;
+            break;
         }
     }
     else {                                                              // Orthographic
@@ -234,7 +245,8 @@ int main(void)
     Shark shark = Shark(vec3(-12.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
     Whale whale = Whale(vec3(20.0f, -20.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
     Submarine submarine = Submarine(vec3(10.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
-    AngelFish angelFish = AngelFish(vec3(15.0f, -10.0f, 10.0f), vec3(angelFishScale), vec3(0.0f));
+    AngelFish angelFish = AngelFish(vec3(15.0f, -10.0f, 10.0f), vec3(angelFishScale), vec3(90.0f));
+    angelFish.scale.z = 1.01f;
 
 
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
@@ -351,7 +363,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Set-up / update player's position
-        angelFish.position = vec3(0.0f, 0.0f, -5.0f);
+        angelFish.position = playerPos;
+        //angelFish.position = vec3(0.0f, 0.0f, 5.0f);
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
@@ -360,7 +373,7 @@ int main(void)
             glDisable(GL_BLEND);
 
             //Set up / Update camera position based on player's position
-            POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z - 3.0f);
+            POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y, angelFish.position.z - 3.0f);
 
             // Angel fish = player
             angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
