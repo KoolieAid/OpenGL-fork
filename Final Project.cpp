@@ -221,10 +221,10 @@ int main(void)
         spadeFishes.push_back(SpadeFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(spadeFishScale), vec3(0.0f, 90.0f, 2.0f)));
     }
 
-    vector<AngelFish> angelFishes;
+    /*vector<AngelFish> angelFishes;
     for (int i = 0; i < 12; i++) {
         angelFishes.push_back(AngelFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(angelFishScale), vec3(0.0f, -90.0f, 2.0f)));
-    }
+    }*/
 
     vector<Trout> trouts;
     for (int i = 0; i < 12; i++) {
@@ -234,6 +234,7 @@ int main(void)
     Shark shark = Shark(vec3(-12.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
     Whale whale = Whale(vec3(20.0f, -20.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
     Submarine submarine = Submarine(vec3(10.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
+    AngelFish angelFish = AngelFish(vec3(15.0f, -10.0f, 10.0f), vec3(angelFishScale), vec3(0.0f));
 
 
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
@@ -267,9 +268,9 @@ int main(void)
     GLuint TroutVAO = setBuffers(troutVertexData);
     trouts[0].setAttribPointer();
 
-    vector<GLfloat> angelFishVertexData = angelFishes[0].loadVertexData();
+    vector<GLfloat> angelFishVertexData = angelFish.loadVertexData();
     GLuint AngelFishVAO = setBuffers(angelFishVertexData);
-    angelFishes[0].setAttribPointer();
+    angelFish.setAttribPointer();
 
     // Vertex Sizes
     int bassSize = bassVertexData.size();
@@ -295,7 +296,7 @@ int main(void)
     MyTextureMap blueBettaTexMap = blueBettas[0].loadTextures();
     MyTextureMap spadeFishTexMap = spadeFishes[0].loadTextures();
     MyTextureMap troutTexMap = trouts[0].loadTextures();
-    MyTextureMap angelFishTexMap = angelFishes[0].loadTextures();
+    MyTextureMap angelFishTexMap = angelFish.loadTextures();
 
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
@@ -339,7 +340,7 @@ int main(void)
     int numBetta = blueBettas.size();
     int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
-    int numAngelFish = angelFishes.size();
+    //int numAngelFish = angelFish.size();
 
 
     cout << "> Drawing...\n";
@@ -350,7 +351,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Set-up / update player's position
-        shark.position = vec3(0.0f, 0.0f, -5.0f);
+        angelFish.position = vec3(0.0f, 0.0f, -5.0f);
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
@@ -359,7 +360,10 @@ int main(void)
             glDisable(GL_BLEND);
 
             //Set up / Update camera position based on player's position
-            POV3Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z - 5.0f);
+            POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z - 3.0f);
+
+            // Angel fish = player
+            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
@@ -367,7 +371,7 @@ int main(void)
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-            //shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
+            shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // Submarine
             submarine.draw(SMLitTexturedNormap, submarineSize, SubmarineVAO, submarineTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
@@ -397,11 +401,11 @@ int main(void)
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
-            // Angel Fish
+            /*// Angel Fish
             for (int i = 0; i < numAngelFish; i++) {
                 angelFishes[i].draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
                 angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
-            }
+            }*/
         }
 
         // Ortho Camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -410,13 +414,16 @@ int main(void)
             // Disables blending
             glDisable(GL_BLEND);
 
+            // Angel fish = player
+            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
+
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
             whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-            //shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
+            shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // Submarine
             submarine.draw(SMLitTexturedNormap, submarineSize, SubmarineVAO, submarineTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
@@ -446,11 +453,11 @@ int main(void)
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
-            // Angel Fish
+            /*// Angel Fish
             for (int i = 0; i < numAngelFish; i++) {
                 angelFishes[i].draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
                 angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
-            }
+            }*/
         }
 
         // 1st POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -463,7 +470,10 @@ int main(void)
             glBlendColor(1.000, 0.012, 0.012, 1.000);
 
             //Set up / Update camera position based on player's position
-            POV1Cam.position = vec3(shark.position.x, shark.position.y + 0.5f, shark.position.z + 2.0f);
+            POV1Cam.position = vec3(angelFish.position.x, angelFish.position.y + 0.5f, angelFish.position.z + 2.0f);
+
+            // Angel fish = player
+            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
@@ -501,11 +511,11 @@ int main(void)
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
 
-            // Angel Fish
+            /*// Angel Fish
             for (int i = 0; i < numAngelFish; i++) {
                 angelFishes[i].draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
                 angelFishes[i].position.z = fmod(angelFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
-            }
+            }*/
         
         // Light Intensity
         switch (intensity_level) {
