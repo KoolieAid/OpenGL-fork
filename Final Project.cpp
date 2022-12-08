@@ -30,7 +30,7 @@ using namespace glm;
 
 // Global Parameters & Settings // // // // // // // // // // // // // // // // // // // // // // // // 
 
-// For controlling player's position
+// For controlling the player
 vec3 playerPos = vec3(0.0f, 0.0f, -5.0f);
 
 // For controlling the camera view
@@ -52,7 +52,7 @@ float screenHeight = 1080.0f;
 OrthoCamera* orthoControl;
 PerspectiveCamera* POV3Control;
 PerspectiveCamera* POV1Control;
-float moveSpeed = 0.25f;
+float moveSpeed = 0.05f;
 
 // Setting
 int intensity_level = 2;  
@@ -84,33 +84,41 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
     // Camera Movement
     if (isPOV3) {                                                       // 3rd Perspective
         switch (key) {
-            case GLFW_KEY_W: POV3Control->position.z += moveSpeed; playerPos.z += 0.2f;
+            case GLFW_KEY_W: POV3Control->position.z += moveSpeed; 
+                             playerPos.z += moveSpeed;
                 break;
             case GLFW_KEY_A: POV3Control->position.x -= moveSpeed; 
                 break;
-            case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; playerPos.z -= 0.2f;
+            case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; 
+                             playerPos.z -= moveSpeed;
                 break;
             case GLFW_KEY_D: POV3Control->position.x += moveSpeed; 
                 break;
-            case GLFW_KEY_Q: POV3Control->position.z -= moveSpeed; playerPos.y += 0.2f;
+            case GLFW_KEY_Q: POV3Control->position.z -= moveSpeed; 
+                             playerPos.y += moveSpeed;
                 break;
-            case GLFW_KEY_E: POV3Control->position.x += moveSpeed; playerPos.y -= 0.2f;
+            case GLFW_KEY_E: POV3Control->position.x += moveSpeed; 
+                             playerPos.y -= moveSpeed;
                 break;
         }
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
-        case GLFW_KEY_W: POV3Control->position.z += moveSpeed; playerPos.z += 0.2f; POV1Control->center.z += 0.2f;
+        case GLFW_KEY_W: playerPos.z += moveSpeed; 
+                         POV1Control->center.z += moveSpeed;
             break;
         case GLFW_KEY_A: POV3Control->position.x -= moveSpeed; 
             break;
-        case GLFW_KEY_S: POV3Control->position.z -= moveSpeed; playerPos.z -= 0.2f; POV1Control->center.z -= 0.2f;
+        case GLFW_KEY_S: playerPos.z -= moveSpeed; 
+                         POV1Control->center.z -= moveSpeed;
             break;
         case GLFW_KEY_D: POV3Control->position.x += moveSpeed; 
             break;
-        case GLFW_KEY_Q: POV3Control->position.z -= moveSpeed; playerPos.y += 0.2f; POV1Control->center.y += 0.2f;
+        case GLFW_KEY_Q: playerPos.y += moveSpeed; 
+                         POV1Control->center.y += moveSpeed;
             break;
-        case GLFW_KEY_E: POV3Control->position.x += moveSpeed; playerPos.y -= 0.2f; POV1Control->center.y -= 0.2f;
+        case GLFW_KEY_E: playerPos.y -= moveSpeed; 
+                         POV1Control->center.y -= moveSpeed;
             break;
         }
     }
@@ -356,7 +364,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Set-up / update player's position
+        // Update player position
         angelFish.position = playerPos;
         
 
@@ -366,9 +374,10 @@ int main(void)
             // Disables blending
             glDisable(GL_BLEND);
 
+            // Skybox
             skybox.draw(SMSkyBox, skyboxTex, POV3Cam.persProject(), POV3Cam.persViewPOV3());
 
-            //Set up / Update camera position based on player's position
+            // Update camera position in 3rd POV
             POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y + 0.1f, angelFish.position.z - 1.0f);
 
             // Angel fish = player
@@ -416,6 +425,9 @@ int main(void)
 
             // Disables blending
             glDisable(GL_BLEND);
+
+            // Skybox
+            skybox.draw(SMSkyBox, skyboxTex, orthoCam.orthoProjectSkybox(), orthoCam.orthoView());
 
             // Angel fish = player
             angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
@@ -466,7 +478,10 @@ int main(void)
             glBlendEquation(GL_FUNC_ADD);
             glBlendColor(1.000, 0.012, 0.012, 1.000);
 
-            //Set up / Update camera position based on player's position
+            // Skybox
+            skybox.draw(SMSkyBox, skyboxTex, POV1Cam.persProject(), POV1Cam.persViewPOV1());
+
+            // Update camera position in 1st POV
             POV1Cam.position = vec3(angelFish.position.x, angelFish.position.y + 0.5f, angelFish.position.z + 2.0f);
 
             // Angel fish = player
