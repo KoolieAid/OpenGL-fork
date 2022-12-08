@@ -461,7 +461,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -617,7 +617,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -773,7 +773,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -935,7 +935,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -1097,7 +1097,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -1238,7 +1238,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -1394,7 +1394,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
@@ -1541,7 +1541,7 @@ public:
 
 		// Point Light
 		GLuint pntlightPosLoc = glGetUniformLocation(shader.shaderProgram, "pntlightPos");
-		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(glm::vec3(-10.0f, 2.0f, -1.0f)));
+		glUniform3fv(pntlightPosLoc, 1, glm::value_ptr(point.light_pos));
 
 		GLuint pntlightColorLoc = glGetUniformLocation(shader.shaderProgram, "pntlightColor");
 		glUniform3fv(pntlightColorLoc, 1, glm::value_ptr(point.light_color));
