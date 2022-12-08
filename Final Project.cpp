@@ -84,38 +84,50 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
     // Camera Movement
     if (isPOV3) {                                                       // 3rd Perspective
         switch (key) {
-            case GLFW_KEY_W: playerPos.z += moveSpeed;
+            case GLFW_KEY_W: POV3Control->position.z += moveSpeed;
+                             playerPos.z += moveSpeed;
                 break;
-            case GLFW_KEY_A: playerPos.x += moveSpeed;
+            case GLFW_KEY_A: POV3Control->position.x += moveSpeed;
+                             playerPos.x += moveSpeed;
                 break;
-            case GLFW_KEY_S: playerPos.z -= moveSpeed;
+            case GLFW_KEY_S: POV3Control->position.z -= moveSpeed;
+                             playerPos.z -= moveSpeed;
                 break;
-            case GLFW_KEY_D: playerPos.x -= moveSpeed;
+            case GLFW_KEY_D: POV3Control->position.x -= moveSpeed;
+                             playerPos.x -= moveSpeed;
                 break;
-            case GLFW_KEY_Q: playerPos.y += moveSpeed;
+            case GLFW_KEY_Q: POV3Control->position.y += moveSpeed;
+                             playerPos.y += moveSpeed;
                 break;
-            case GLFW_KEY_E: playerPos.y -= moveSpeed;
+            case GLFW_KEY_E: POV3Control->position.y -= moveSpeed;
+                             playerPos.y -= moveSpeed;
                 break;
         }
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
-        case GLFW_KEY_W: playerPos.z += moveSpeed; 
+        case GLFW_KEY_W: POV1Control->position.z += moveSpeed;
+                         playerPos.z += moveSpeed; 
                          POV1Control->center.z += moveSpeed;
             break;
-        case GLFW_KEY_A: playerPos.x += moveSpeed;
+        case GLFW_KEY_A: POV1Control->position.x += moveSpeed;
+                         playerPos.x += moveSpeed;
                          POV1Control->center.x += moveSpeed;
             break;
-        case GLFW_KEY_S: playerPos.z -= moveSpeed; 
+        case GLFW_KEY_S: POV1Control->position.z -= moveSpeed;
+                         playerPos.z -= moveSpeed; 
                          POV1Control->center.z -= moveSpeed;
             break;
-        case GLFW_KEY_D: playerPos.x -= moveSpeed;
+        case GLFW_KEY_D: POV1Control->position.x -= moveSpeed;
+                         playerPos.x -= moveSpeed;
                          POV1Control->center.x -= moveSpeed;
             break;
-        case GLFW_KEY_Q: playerPos.y += moveSpeed; 
+        case GLFW_KEY_Q: POV1Control->position.y += moveSpeed;
+                         playerPos.y += moveSpeed; 
                          POV1Control->center.y += moveSpeed;
             break;
-        case GLFW_KEY_E: playerPos.y -= moveSpeed; 
+        case GLFW_KEY_E: POV1Control->position.y -= moveSpeed;
+                         playerPos.y -= moveSpeed; 
                          POV1Control->center.y -= moveSpeed;
             break;
         }
@@ -362,8 +374,8 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Update player and camera position
-        angelFish.position = POV3Control->position = POV1Control->position = playerPos;
+        // Update player position
+        angelFish.position = playerPos;
         
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
