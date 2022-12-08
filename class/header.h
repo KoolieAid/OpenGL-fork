@@ -193,6 +193,10 @@ class OrthoCamera : public MyCamera
 			return ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f);
 		}
 
+		mat4 orthoProjectSkybox() {
+			return ortho(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
+		}
+
 		mat4 orthoView()
 		{
 			return lookAt(position, center, up);
