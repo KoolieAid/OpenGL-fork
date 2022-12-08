@@ -52,7 +52,7 @@ float screenHeight = 1080.0f;
 OrthoCamera* orthoControl;
 PerspectiveCamera* POV3Control;
 PerspectiveCamera* POV1Control;
-float moveSpeed = 0.05f;
+float moveSpeed = 0.2f;
 
 // Setting
 int intensity_level = 2;  
@@ -103,10 +103,12 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
             case GLFW_KEY_Q: POV3Control->position.y += moveSpeed;
                              playerPos.y += moveSpeed;
                              POV1Control->center.y += moveSpeed;
+                             std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
                 break;
             case GLFW_KEY_E: POV3Control->position.y -= moveSpeed;
                              playerPos.y -= moveSpeed;
                              POV1Control->center.y -= moveSpeed;
+                             std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
                 break;
         }
     }
@@ -131,10 +133,12 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
         case GLFW_KEY_Q: POV1Control->position.y += moveSpeed;
                          playerPos.y += moveSpeed; 
                          POV1Control->center.y += moveSpeed;
+                         std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
             break;
         case GLFW_KEY_E: POV1Control->position.y -= moveSpeed;
                          playerPos.y -= moveSpeed; 
                          POV1Control->center.y -= moveSpeed;
+                         std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
             break;
         }
     }
