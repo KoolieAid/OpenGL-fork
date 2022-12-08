@@ -1,7 +1,6 @@
 #version 330 core
 
 uniform sampler2D tex0;
-uniform sampler2D tex1;
 
 uniform vec3 dirlightPos;
 uniform vec3 dirlightColor;
@@ -26,9 +25,9 @@ in vec3 fragPos;
 out vec4 FragColor;
 
 void main() {	
-	vec3 normal = texture(tex1, texCoord).rgb;
 
 	// Normalize Values
+	vec3 normal = normalize(normCoord);
 	normal = normalize(normal * 2.0 - 1.0);
     normal = normalize(TBN * normal);
 	vec3 dirlightDir = normalize(dirlightPos - fragPos);

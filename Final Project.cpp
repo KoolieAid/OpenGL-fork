@@ -374,6 +374,7 @@ int main(void)
 
         // Update player position
         angelFish.position = playerPos;
+        point_light.light_pos = vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z + 1.0f);
         
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -534,9 +535,9 @@ int main(void)
         
         // Light Intensity
         switch (intensity_level) {
-            case 1: point_light.intensity = 1.0f; break;
-            case 2: point_light.intensity = 5.0f; break;
-            case 3: point_light.intensity = 10.0f; break;
+            case 1: point_light.intensity = 0.5f; break;
+            case 2: point_light.intensity = 1.0f; break;
+            case 3: point_light.intensity = 3.0f; break;
         }
 
 

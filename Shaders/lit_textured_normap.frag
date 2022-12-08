@@ -64,8 +64,8 @@ void main() {
 
 	// Attenuation
 	float constant = 1.0f;
-    float linear = 0.7f;
-    float quadratic = 1.8f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
     float distance = length(pntlightPos - fragPos);
     float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
 
