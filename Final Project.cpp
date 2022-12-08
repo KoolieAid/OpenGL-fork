@@ -86,21 +86,27 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
         switch (key) {
             case GLFW_KEY_W: POV3Control->position.z += moveSpeed;
                              playerPos.z += moveSpeed;
+                             POV1Control->center.z += moveSpeed;
                 break;
             case GLFW_KEY_A: POV3Control->position.x += moveSpeed;
                              playerPos.x += moveSpeed;
+                             POV1Control->center.x += moveSpeed;
                 break;
             case GLFW_KEY_S: POV3Control->position.z -= moveSpeed;
                              playerPos.z -= moveSpeed;
+                             POV1Control->center.z -= moveSpeed;
                 break;
             case GLFW_KEY_D: POV3Control->position.x -= moveSpeed;
                              playerPos.x -= moveSpeed;
+                             POV1Control->center.x -= moveSpeed;
                 break;
             case GLFW_KEY_Q: POV3Control->position.y += moveSpeed;
                              playerPos.y += moveSpeed;
+                             POV1Control->center.y += moveSpeed;
                 break;
             case GLFW_KEY_E: POV3Control->position.y -= moveSpeed;
                              playerPos.y -= moveSpeed;
+                             POV1Control->center.y -= moveSpeed;
                 break;
         }
     }
