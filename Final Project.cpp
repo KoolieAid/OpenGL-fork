@@ -82,6 +82,7 @@ void turn()
     playerDirection.z = sin(PI * 2 * controlYaw / 360.0f);
 
     playerFront = glm::normalize(playerDirection);
+    playerFront.y = 0.0f;
 }
 
 // Key Callbacks [Controls?/Debugging] // // // // // // // // // // // // // // // // // // // // // // // // 
@@ -120,16 +121,28 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
                              controlYaw += turnSpeed;
                              turn();  
                 break;
-            case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
+            case GLFW_KEY_Q: if (playerControl->position.y > 15.0f) { break; }
+                             playerControl->position.y += moveSpeed;
                              POV3Control->position.y += moveSpeed;
                 break;
-            case GLFW_KEY_E: playerControl->position.y -= moveSpeed;
+            case GLFW_KEY_E: if (playerControl->position.y > 15.0f) { break; }
+                             playerControl->position.y -= moveSpeed;
                              POV3Control->position.y -= moveSpeed;
                 break;
         }
+
         POV1Control->center = playerControl->position - playerFront * 2.0f;
         POV1Control->position = playerControl->position;
         POV3Control->position = playerControl->position + glm::normalize(-direction);
+
+        cout.precision(4);
+        if (playerControl->position.y > 15.0f) {
+            playerControl->position.y = POV3Control->position.y = POV1Control->center.y = 15.0f;
+            cout << "Depth: " << "0fts\n";
+        }
+        else {
+            cout << "Depth: " << -(playerControl->position.y - 15) << "fts\n";
+        }
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
@@ -145,16 +158,28 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
                              controlYaw += turnSpeed;
                              turn();
                 break;
-            case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
+            case GLFW_KEY_Q: if (playerControl->position.y > 15.0f) { break; }
+                             playerControl->position.y += moveSpeed;
                              POV1Control->center.y += moveSpeed;
                 break;
-            case GLFW_KEY_E: playerControl->position.y -= moveSpeed;
+            case GLFW_KEY_E: if (playerControl->position.y > 15.0f) { break; }
+                             playerControl->position.y -= moveSpeed;
                              POV1Control->center.y -= moveSpeed;
                 break;
         }
+
         POV1Control->center = playerControl->position - playerFront * 2.0f;
         POV1Control->position = playerControl->position;
         POV3Control->position = playerControl->position + glm::normalize(-direction);
+
+        cout.precision(4);
+        if (playerControl->position.y > 15.0f) {
+            playerControl->position.y = POV3Control->position.y = POV1Control->center.y = 15.0f;
+            cout << "Depth: " << "0fts\n";
+        }
+        else {
+            cout << "Depth: " << -(playerControl->position.y - 15) << "fts\n";
+        }
     }
     else {                                                              // Orthographic
         switch (key) {
