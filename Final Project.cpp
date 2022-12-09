@@ -28,12 +28,11 @@ using namespace glm;
 
 #include "class/header.h"
 
+#define PI 3.141592653589
+
 // Global Parameters & Settings // // // // // // // // // // // // // // // // // // // // // // // // 
 
-// For controlling the player
-vec3 playerPos = vec3(0.0f, 0.0f, -5.0f);
-
-// For controlling the camera view
+// For Controlling the Camera View
 bool isOrtho = false;
 bool isPOV3 = true;
 bool isPOV1 = false;
@@ -48,14 +47,39 @@ float cam_pitch = 0.0f;
 float screenWidth = 1920.0f;
 float screenHeight = 1080.0f;
 
+// Player Controls
+AngelFish* playerControl;
+vec3 playerFront = vec3(0.0f, 0.0f, 1.0f);
+vec3 direction = vec3(0.0f);
+float controlYaw = -90.0f;
+
 // Camera Control Pointers
 OrthoCamera* orthoControl;
 PerspectiveCamera* POV3Control;
 PerspectiveCamera* POV1Control;
-float moveSpeed = 0.2f;
+float moveSpeed = 0.1f;
+float turnSpeed = 2.5f;
 
 // Setting
 int intensity_level = 2;  
+
+// For Debugging
+void print(vec3 vector)
+{
+    cout << vector.x << "-" << vector.z << "-" << vector.z << "\n";
+}
+
+// Determines the Front of the Model when Moving
+void turn()
+{ 
+    vec3 playerDirection;
+
+    playerDirection.x = cos(PI * 2 * controlYaw / 360.0f);
+    playerDirection.y = 0.0f;
+    playerDirection.z = sin(PI * 2 * controlYaw / 360.0f);
+
+    playerFront = glm::normalize(playerDirection);
+}
 
 // Key Callbacks [Controls?/Debugging] // // // // // // // // // // // // // // // // // // // // // // // // 
 void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) 
@@ -63,84 +87,71 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
     // Camera Mode Controls
     if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
         if (isPOV3) {
-            isPOV3 = false;
-            isOrtho = false;
+            isPOV3 = isOrtho = false;
             isPOV1 = true;
             std::cout << "Camera is in 1st POV - perspective view.\n";
         }
         else if (isPOV3 == false) {
+            isPOV1 = isOrtho = false;
             isPOV3 = true;
-            isOrtho = false;
-            isPOV1 = false;
             std::cout << "Camera is in 3rd POV - perspective view.\n";
         }
     } else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+        isPOV1 = isPOV3 = false;
         isOrtho = true;
-        isPOV3 = false;
-        isPOV1 = false;
         std::cout << "Camera is in orthographic view.\n";
     }
 
     // Camera Movement
     if (isPOV3) {                                                       // 3rd Perspective
         switch (key) {
-            case GLFW_KEY_W: POV3Control->position.z += moveSpeed;
-                             playerPos.z += moveSpeed;
-                             POV1Control->center.z += moveSpeed;
+            case GLFW_KEY_W: playerControl->position -= playerFront * moveSpeed;
                 break;
-            case GLFW_KEY_A: POV3Control->position.x += moveSpeed;
-                             playerPos.x += moveSpeed;
-                             POV1Control->center.x += moveSpeed;
+            case GLFW_KEY_A: playerControl->rotation.y += turnSpeed;
+                             controlYaw -= turnSpeed;
+                             turn(); 
                 break;
-            case GLFW_KEY_S: POV3Control->position.z -= moveSpeed;
-                             playerPos.z -= moveSpeed;
-                             POV1Control->center.z -= moveSpeed;
+            case GLFW_KEY_S: playerControl->position += playerFront * moveSpeed;
                 break;
-            case GLFW_KEY_D: POV3Control->position.x -= moveSpeed;
-                             playerPos.x -= moveSpeed;
-                             POV1Control->center.x -= moveSpeed;
+            case GLFW_KEY_D: playerControl->rotation.y -= turnSpeed;  
+                             controlYaw += turnSpeed;
+                             turn();  
                 break;
-            case GLFW_KEY_Q: POV3Control->position.y += moveSpeed;
-                             playerPos.y += moveSpeed;
-                             POV1Control->center.y += moveSpeed;
-                             std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
+            case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
+                             POV3Control->position.y += moveSpeed;
                 break;
-            case GLFW_KEY_E: POV3Control->position.y -= moveSpeed;
-                             playerPos.y -= moveSpeed;
-                             POV1Control->center.y -= moveSpeed;
-                             std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
+            case GLFW_KEY_E: playerControl->position.y -= moveSpeed;
+                             POV3Control->position.y -= moveSpeed;
                 break;
         }
+        POV1Control->center = playerControl->position - playerFront * 2.0f;
+        POV1Control->position = playerControl->position;
+        POV3Control->position = playerControl->position + glm::normalize(-direction);
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
-        case GLFW_KEY_W: POV1Control->position.z += moveSpeed;
-                         playerPos.z += moveSpeed; 
-                         POV1Control->center.z += moveSpeed;
-            break;
-        case GLFW_KEY_A: POV1Control->position.x += moveSpeed;
-                         playerPos.x += moveSpeed;
-                         POV1Control->center.x += moveSpeed;
-            break;
-        case GLFW_KEY_S: POV1Control->position.z -= moveSpeed;
-                         playerPos.z -= moveSpeed; 
-                         POV1Control->center.z -= moveSpeed;
-            break;
-        case GLFW_KEY_D: POV1Control->position.x -= moveSpeed;
-                         playerPos.x -= moveSpeed;
-                         POV1Control->center.x -= moveSpeed;
-            break;
-        case GLFW_KEY_Q: POV1Control->position.y += moveSpeed;
-                         playerPos.y += moveSpeed; 
-                         POV1Control->center.y += moveSpeed;
-                         std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
-            break;
-        case GLFW_KEY_E: POV1Control->position.y -= moveSpeed;
-                         playerPos.y -= moveSpeed; 
-                         POV1Control->center.y -= moveSpeed;
-                         std::cout << "The player is " << to_string(playerPos.y) << "m below sea level.\n";
-            break;
+            case GLFW_KEY_W: playerControl->position -= playerFront * moveSpeed;
+                break;
+            case GLFW_KEY_A: playerControl->rotation.y += turnSpeed;
+                             controlYaw -= turnSpeed;
+                             turn();
+                break;
+            case GLFW_KEY_S: playerControl->position += playerFront * moveSpeed;
+                break;
+            case GLFW_KEY_D: playerControl->rotation.y -= turnSpeed;
+                             controlYaw += turnSpeed;
+                             turn();
+                break;
+            case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
+                             POV1Control->center.y += moveSpeed;
+                break;
+            case GLFW_KEY_E: playerControl->position.y -= moveSpeed;
+                             POV1Control->center.y -= moveSpeed;
+                break;
         }
+        POV1Control->center = playerControl->position - playerFront * 2.0f;
+        POV1Control->position = playerControl->position;
+        POV3Control->position = playerControl->position + glm::normalize(-direction);
     }
     else {                                                              // Orthographic
         switch (key) {
@@ -190,12 +201,13 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
         if (cam_pitch < -89.0f)
             cam_pitch = -89.0f;
 
-        vec3 direction;
+        // Update Direction
         direction.x = cos(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
         direction.y = sin(glm::radians(cam_pitch));
         direction.z = sin(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
 
         POV3Control->center = glm::normalize(direction);
+        POV3Control->position = playerControl->position + glm::normalize(-direction);
     }
 }
 
@@ -243,6 +255,7 @@ int main(void)
     float whaleScale = 1.0f;
     float submarineScale = 1.0 / 96.0f;
 
+    // Creature Models
     vector<Bass> basses;
     for (int i = 0; i < 12; i++) {
         basses.push_back(Bass(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(bassScale), vec3(0.0f, 90.0f, 2.0f)));
@@ -260,14 +273,19 @@ int main(void)
 
     vector<Trout> trouts;
     for (int i = 0; i < 12; i++) {
-        trouts.push_back(Trout(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(troutScale), vec3(0.0f, 0.0f, 2.0f)));
+        trouts.push_back(Trout(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(troutScale), vec3(0.0f, 0.0f, 0.0f)));
     }
 
     Shark shark = Shark(vec3(-12.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
     Whale whale = Whale(vec3(20.0f, -20.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
     Submarine submarine = Submarine(vec3(10.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
-    AngelFish angelFish = AngelFish(vec3(15.0f, -10.0f, 10.0f), vec3(angelFishScale), vec3(90.0f));
-    angelFish.scale.z = 1.01f;
+
+    // Skybox
+    SkyBox skybox = SkyBox();
+
+    // Player Model
+    AngelFish angelFish = AngelFish(vec3(0.0f, 0.0f, 0.0f), vec3(angelFishScale, angelFishScale, angelFishScale), vec3(0.0f, controlYaw, 0.0f));
+    playerControl = &angelFish;
 
 
     // Create Vertex Buffer Objects // // // // // // // // // // // // // // // // // // // // // // // //
@@ -331,6 +349,10 @@ int main(void)
     MyTextureMap troutTexMap = trouts[0].loadTextures();
     MyTextureMap angelFishTexMap = angelFish.loadTextures();
 
+    cout << "> Loading SkyBox Texture Data...\n";
+
+    GLuint skyboxTex = skybox.loadTextures();
+
 
     // Setup Shaders // // // // // // // // // // // // // // // // // // // // // // // //
     cout << "> Loading Shader Data...\n";
@@ -341,6 +363,9 @@ int main(void)
 
     // Setup Camera (Temp Setup)
     cout << "> Loading Camera Data...\n";
+    
+    // Initial Player Direction
+    turn();
 
     // Orthographic Camera
     OrthoCamera orthoCam = OrthoCamera(vec3(1.0f, 4.0f, 1.0f), screenWidth, screenHeight);
@@ -348,13 +373,15 @@ int main(void)
     orthoControl = &orthoCam;
 
     // 3rd Person Perspective Camera
-    PerspectiveCamera POV3Cam = PerspectiveCamera(vec3(0.0f, 0.0f, 0.5f), screenWidth, screenHeight);
-    POV3Cam.center = vec3(0.0f);
+    PerspectiveCamera POV3Cam = PerspectiveCamera(playerControl->position - playerFront, screenWidth, screenHeight);
+    POV3Cam.zfar = 30.0f;
+    POV3Cam.center = playerControl->position;
     POV3Control = &POV3Cam;
 
     // 1st Person Perspective Camera
-    PerspectiveCamera POV1Cam = PerspectiveCamera(vec3(0.0f, 0.0f, 0.5f), screenWidth, screenHeight);
-    POV1Cam.center = vec3(0.0f);
+    PerspectiveCamera POV1Cam = PerspectiveCamera(playerControl->position, screenWidth, screenHeight);
+    POV1Cam.zfar = 80.0f;
+    POV1Cam.center = playerControl->position - playerFront * 2.0f;
     POV1Control = &POV1Cam;
 
     // Setup Lighting
@@ -370,10 +397,8 @@ int main(void)
     int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
 
-
-    SkyBox skybox = SkyBox();
-    GLuint skyboxTex = skybox.loadTextures();
-
+    // Others
+    
 
     cout << "> Drawing...\n";
     /* Loop until the user closes the window */
@@ -381,11 +406,6 @@ int main(void)
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-
-        // Update player position
-        angelFish.position = playerPos;
-        point_light.light_pos = vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z + 1.0f);
-        
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
@@ -395,12 +415,6 @@ int main(void)
 
             // Skybox
             skybox.draw(SMSkyBox, skyboxTex, POV3Cam.persProject(), POV3Cam.persViewPOV3());
-
-            // Update camera position in 3rd POV
-            POV3Cam.position = vec3(angelFish.position.x, angelFish.position.y + 0.1f, angelFish.position.z - 1.0f);
-
-            // Angel fish = player
-            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
@@ -437,6 +451,9 @@ int main(void)
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
                 blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
+
+            // AngelFish (Player)
+            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
         }
 
         // Ortho Camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -448,7 +465,7 @@ int main(void)
             // Skybox
             skybox.draw(SMSkyBox, skyboxTex, orthoCam.orthoProjectSkybox(), orthoCam.orthoView());
 
-            // Angel fish = player
+            // AngelFish (Player)
             angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
 
             // Whale
@@ -500,11 +517,8 @@ int main(void)
             // Skybox
             skybox.draw(SMSkyBox, skyboxTex, POV1Cam.persProject(), POV1Cam.persViewPOV1());
 
-            // Update camera position in 1st POV
-            POV1Cam.position = vec3(angelFish.position.x, angelFish.position.y, angelFish.position.z + 1.0f);
-
-            // Angel fish = player
-            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
+            // AngelFish (Player)
+            // There is no need to draw the Player in POV1
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
@@ -549,7 +563,6 @@ int main(void)
             case 2: point_light.intensity = 3.0f; break;
             case 3: point_light.intensity = 6.0f; break;
         }
-
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
