@@ -67,9 +67,12 @@ float turnSpeed = 2.5f;
 int intensity_level = 2;  
 
 // For Debugging
-void print(vec3 vector)
-{
-    cout << vector.x << "-" << vector.z << "-" << vector.z << "\n";
+int randomint(int r) {
+    return rand() % (r * 2) - r;
+}
+
+vec3 randomvec(int r) {
+    return vec3(randomint(r), randomint(r), randomint(r));
 }
 
 // Determines the Front of the Model when Moving
@@ -275,7 +278,7 @@ int main(void)
 
     // Object Scales
     float angelFishScale = 1.0f / 4.0f;
-    float sharkScale = 1.0f / 192.0;
+    float sharkScale = 1.0f / 180.0;
     float blueBettaScale = 1.0f / 600.0f;
     float troutScale = 1.0f / 74.0f;
     float bassScale = 1.0f / 8.0f;
@@ -283,36 +286,47 @@ int main(void)
     float whaleScale = 1.0f;
     float seahorseScale = 1.0 / 96.0f;
 
+    // Hotspots
+    vec3 hotspot1 = vec3(8.0f, 3.0f, 3.0f);   
+    vec3 hotspot2 = vec3(-3.0f, -3.0, 10.0f);      
+    vec3 hotspot3 = vec3(0.0f, 0.0f, 10.0f);       
+    vec3 hotspot4 = vec3(0.0f, 3.0f, 5.0f);  
+    vec3 hotspot5 = vec3(0.0f, 2.0f, 5.0f);
+
     // Creature Models
     vector<Bass> basses;
     for (int i = 0; i < 12; i++) {
-        basses.push_back(Bass(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(bassScale), vec3(0.0f, 90.0f, 2.0f)));
-    }
-
-    vector<BlueBetta> blueBettas;
-    for (int i = 0; i < 12; i++) {
-        blueBettas.push_back(BlueBetta(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(blueBettaScale), vec3(0.0f, 90.0f, 2.0f)));
+        basses.push_back(Bass(hotspot1 + randomvec(2.0f), vec3(bassScale), vec3(0.0f, 90.0f, 2.0f)));
     }
 
     vector<SpadeFish> spadeFishes;
     for (int i = 0; i < 8; i++) {
-        spadeFishes.push_back(SpadeFish(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(spadeFishScale), vec3(0.0f, 90.0f, 2.0f)));
+        spadeFishes.push_back(SpadeFish(hotspot2 + randomvec(3.0f), vec3(spadeFishScale), vec3(0.0f, 180.0f, 2.0f)));
     }
 
     vector<Trout> trouts;
     for (int i = 0; i < 12; i++) {
-        trouts.push_back(Trout(vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5), vec3(troutScale), vec3(0.0f, 0.0f, 2.0f)));
+        trouts.push_back(Trout(hotspot3 + randomvec(2.0f), vec3(troutScale), vec3(0.0f, -90.0f, 2.0f)));
+    }
+
+    vector<BlueBetta> blueBettas;
+    for (int i = 0; i < 12; i++) {
+        blueBettas.push_back(BlueBetta(hotspot4 + randomvec(1.0f), vec3(blueBettaScale), vec3(0.0f, 90.0f, 2.0f)));
+    }
+
+    vector<SeaHorse> seaHorses;
+    for (int i = 0; i < 10; i++) {
+        seaHorses.push_back(SeaHorse(hotspot5 + randomvec(1.0f), vec3(seahorseScale), vec3(90.0f, 180.0f, 90.0f)));
     }
 
     Shark shark = Shark(vec3(-12.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
-    Whale whale = Whale(vec3(20.0f, -20.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
-    SeaHorse seaHorse = SeaHorse(vec3(3.0f, 0.0f, 0.0f), vec3(seahorseScale), vec3(90.0f, 180.0f, 0.0f));
+    Whale whale = Whale(vec3(8.0f, -15.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 180.0f, 0.0f));
 
     // Skybox
     SkyBox skybox = SkyBox();
 
     // Player Model
-    AngelFish angelFish = AngelFish(vec3(0.0f, 0.0f, 0.0f), vec3(angelFishScale, angelFishScale, angelFishScale), vec3(0.0f, controlYaw, 0.0f));
+    AngelFish angelFish = AngelFish(vec3(0.0f), vec3(angelFishScale, angelFishScale, angelFishScale), vec3(0.0f, controlYaw, 0.0f));
     playerControl = &angelFish;
 
 
@@ -331,9 +345,9 @@ int main(void)
     GLuint WhaleVAO = setBuffers(whaleVertexData);
     whale.setAttribPointer();
 
-    vector<GLfloat> seahorseVertexData = seaHorse.loadVertexData();
+    vector<GLfloat> seahorseVertexData = seaHorses[0].loadVertexData();
     GLuint SeaHorseVAO = setBuffers(seahorseVertexData);
-    seaHorse.setAttribPointer();
+    seaHorses[0].setAttribPointer();
 
     vector<GLfloat> blueBettaVertexData = blueBettas[0].loadVertexData();
     GLuint BlueBettaVAO = setBuffers(blueBettaVertexData);
@@ -371,7 +385,7 @@ int main(void)
     MyTextureMap bassTexMap = basses[0].loadTextures();
     MyTextureMap sharkTexMap = shark.loadTextures();
     MyTextureMap whaleTexMap = whale.loadTextures();
-    MyTextureMap seaHorseTexMap = seaHorse.loadTextures();
+    MyTextureMap seaHorseTexMap = seaHorses[0].loadTextures();
     MyTextureMap blueBettaTexMap = blueBettas[0].loadTextures();
     MyTextureMap spadeFishTexMap = spadeFishes[0].loadTextures();
     MyTextureMap troutTexMap = trouts[0].loadTextures();
@@ -395,7 +409,7 @@ int main(void)
     turn();
 
     // Orthographic Camera
-    OrthoCamera orthoCam = OrthoCamera(vec3(1.0f, 4.0f, 1.0f), screenWidth, screenHeight);
+    OrthoCamera orthoCam = OrthoCamera(vec3(5.0f, 4.0f, 5.0f), screenWidth, screenHeight);
     orthoCam.center = vec3(0.5f, 0.0f, 0.5f);
     orthoControl = &orthoCam;
 
@@ -423,6 +437,7 @@ int main(void)
     int numBetta = blueBettas.size();
     int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
+    int numSeaHorses = seaHorses.size();
 
 
     cout << "> Drawing...\n";
@@ -445,39 +460,40 @@ int main(void)
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-            whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-            whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
+            whale.position.z = (whale.position.z < -150.0f) ? (150.0f) : (whale.position.z - 0.40f);
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
             shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // SeaHorse
-            seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.05f);
-
+            for (int i = 0; i < numSeaHorses; i++) {
+                seaHorses[i].draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
+                seaHorses[i].position.x = (seaHorses[i].position.x > 50) ? (-50.0f) : (seaHorses[i].position.x + 0.01f + i * 0.005f);
+            }
+            
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
                 spadeFishes[i].draw(SMLitTextured, spadeFishSize, SpadeFishVAO, spadeFishTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-                spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                spadeFishes[i].position.x = (spadeFishes[i].position.x > 50) ? (-50.0f) : (spadeFishes[i].position.x + 0.09f + i * 0.001f);
             }
 
             // Bass
             for (int i = 0; i < numBass; i++) {
                 basses[i].draw(SMLitTextured, bassSize, BassVAO, bassTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-                basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                basses[i].position.z = (basses[i].position.z > 50) ? (-50.0f) : (basses[i].position.z + 0.05f + i * 0.005f);
             }
 
             // Trout
-            for (int i = 0; i < numBass; i++) {
+            for (int i = 0; i < numTrout; i++) {
                 trouts[i].draw(SMLitTexturedNormap, troutSize, TroutVAO, troutTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-                trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                trouts[i].position.x = (trouts[i].position.x < -50.0f) ? (50.0f) : (trouts[i].position.x - 0.06f - i * 0.001f);
             }
 
             // Blue Betta
             for (int i = 0; i < numBetta; i++) {
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-                blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                blueBettas[i].position.z = (blueBettas[i].position.z < -50.0f) ? (50.0f) : (blueBettas[i].position.z + 0.01f + i * 0.001f);
             }
 
             // AngelFish (Player)
@@ -493,43 +509,42 @@ int main(void)
             // Skybox
             skybox.draw(SMSkyBox, skyboxTex, orthoCam.orthoProjectSkybox(), orthoCam.orthoView());
 
-            // AngelFish (Player)
-            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-            whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
+            whale.position.z = (whale.position.z < -150.0f) ? (150.0f) : (whale.position.z - 0.40f);
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
             shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // SeaHorse
-            seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.05f);
+            for (int i = 0; i < numSeaHorses; i++) {
+                seaHorses[i].draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
+                seaHorses[i].position.x = (seaHorses[i].position.x > 50) ? (-50.0f) : (seaHorses[i].position.x + 0.01f + i * 0.005f);
+            }
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
                 spadeFishes[i].draw(SMLitTextured, spadeFishSize, SpadeFishVAO, spadeFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-                spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                spadeFishes[i].position.x = (spadeFishes[i].position.x > 50) ? (-50.0f) : (spadeFishes[i].position.x + 0.09f + i * 0.001f);
             }
 
             // Bass
             for (int i = 0; i < numBass; i++) {
                 basses[i].draw(SMLitTextured, bassSize, BassVAO, bassTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-                basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                basses[i].position.z = (basses[i].position.z > 50) ? (-50.0f) : (basses[i].position.z + 0.05f + i * 0.005f);
             }
 
             // Trout
-            for (int i = 0; i < numBass; i++) {
+            for (int i = 0; i < numTrout; i++) {
                 trouts[i].draw(SMLitTexturedNormap, troutSize, TroutVAO, troutTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-                trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                trouts[i].position.x = (trouts[i].position.x < -50.0f) ? (50.0f) : (trouts[i].position.x - 0.06f - i * 0.001f);
             }
 
             // Blue Betta
             for (int i = 0; i < numBetta; i++) {
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-                blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                blueBettas[i].position.z = (blueBettas[i].position.z < -50.0f) ? (50.0f) : (blueBettas[i].position.z + 0.01f + i * 0.001f);
             }
         }
 
@@ -550,38 +565,40 @@ int main(void)
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-            whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
+            whale.position.z = (whale.position.z < -150.0f) ? (150.0f) : (whale.position.z - 0.40f);
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
             shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
             // SeaHorse
-            seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.05f);
+            for (int i = 0; i < numSeaHorses; i++) {
+                seaHorses[i].draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
+                seaHorses[i].position.x = (seaHorses[i].position.x > 50) ? (-50.0f) : (seaHorses[i].position.x + 0.01f + i * 0.005f);
+            }
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
                 spadeFishes[i].draw(SMLitTextured, spadeFishSize, SpadeFishVAO, spadeFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-                spadeFishes[i].position.z = fmod(spadeFishes[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                spadeFishes[i].position.x = (spadeFishes[i].position.x > 50) ? (-50.0f) : (spadeFishes[i].position.x + 0.09f + i * 0.001f);
             }
 
             // Bass
             for (int i = 0; i < numBass; i++) {
                 basses[i].draw(SMLitTextured, bassSize, BassVAO, bassTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-                basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                basses[i].position.z = (basses[i].position.z > 50) ? (-50.0f) : (basses[i].position.z + 0.05f + i * 0.005f);
             }
 
             // Trout
-            for (int i = 0; i < numBass; i++) {
+            for (int i = 0; i < numTrout; i++) {
                 trouts[i].draw(SMLitTexturedNormap, troutSize, TroutVAO, troutTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-                trouts[i].position.z = fmod(trouts[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                trouts[i].position.x = (trouts[i].position.x < -50.0f) ? (50.0f) : (trouts[i].position.x - 0.06f - i * 0.001f);
             }
 
             // Blue Betta
             for (int i = 0; i < numBetta; i++) {
                 blueBettas[i].draw(SMLitTexturedNormap, blueBettaSize, BlueBettaVAO, blueBettaTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-                blueBettas[i].position.z = fmod(blueBettas[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
+                blueBettas[i].position.z = (blueBettas[i].position.z < -50.0f) ? (50.0f) : (blueBettas[i].position.z + 0.01f + i * 0.001f);
             }
         }
         
