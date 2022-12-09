@@ -854,12 +854,12 @@ public:
 		stbi_image_free(tex_bytes);
 
 		// Normal Texture
-		unsigned char* norm_bytes = stbi_load("Textures/SeaHorse/nm.png", &img_width, &img_height, &color_channels, 0);
+		unsigned char* norm_bytes = stbi_load("Textures/SeaHorse/nm.png", &img_width, &img_height, &color_channels, 4);
 		glGenTextures(1, &map.normTex);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, norm_bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, norm_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(norm_bytes);
 

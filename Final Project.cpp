@@ -282,9 +282,6 @@ int main(void)
     Shark shark = Shark(vec3(-12.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
     Whale whale = Whale(vec3(20.0f, -20.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
     SeaHorse seaHorse = SeaHorse(vec3(3.0f, 0.0f, 0.0f), vec3(seahorseScale), vec3(90.0f, 180.0f, 0.0f));
-    AngelFish angelFish = AngelFish(vec3(15.0f, -10.0f, 10.0f), vec3(angelFishScale), vec3(90.0f));
-    angelFish.scale.z = 1.01f;
-    Submarine submarine = Submarine(vec3(10.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
 
     // Skybox
     SkyBox skybox = SkyBox();
@@ -430,7 +427,7 @@ int main(void)
 
             // SeaHorse
             seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-            //seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.5f);
+            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.05f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
@@ -482,7 +479,7 @@ int main(void)
 
             // SeaHorse
             seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.5f);
+            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.05f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
@@ -534,7 +531,7 @@ int main(void)
 
             // SeaHorse
             seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.5f);
+            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.05f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
