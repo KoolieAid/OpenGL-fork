@@ -802,17 +802,17 @@ public:
 	}
 };
 
-// Submarine Model Object Class (Player)
-class Submarine : public MyObject
+// SeaHorse Model Object Class (Player)
+class SeaHorse : public MyObject
 {
 public:
 	// Path
-	string path = "3D/submarine.obj";
+	string path = "3D/sea_horse.obj";
 
 	// Constructors
-	Submarine() : MyObject() {}
+	SeaHorse() : MyObject() {}
 
-	Submarine(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
+	SeaHorse(vec3 nposition, vec3 nscale, vec3 nrotation) : MyObject(nposition, nscale, nrotation) {}
 
 	// Load Vertex Data 
 	vector<GLfloat> loadVertexData()
@@ -858,17 +858,17 @@ public:
 
 		// Base Texture
 		int img_width, img_height, color_channels;
-		unsigned char* tex_bytes = stbi_load("Textures/Submarine/SubLow0Smooth_DefaultMaterial_BaseColor.png", &img_width, &img_height, &color_channels, 0);
+		unsigned char* tex_bytes = stbi_load("Textures/SeaHorse/alb.png", &img_width, &img_height, &color_channels, 0);
 		glGenTextures(1, &map.baseTex);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, map.baseTex);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(tex_bytes);
 
 		// Normal Texture
-		unsigned char* norm_bytes = stbi_load("Textures/Submarine/SubLow0Smooth_DefaultMaterial_Normal.png", &img_width, &img_height, &color_channels, 0);
+		unsigned char* norm_bytes = stbi_load("Textures/SeaHorse/nm.png", &img_width, &img_height, &color_channels, 0);
 		glGenTextures(1, &map.normTex);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
@@ -923,6 +923,7 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map.normTex);
 		glUniform1i(tex1Address, 1);
+
 
 		// Direct Light
 		GLuint dirlightPosLoc = glGetUniformLocation(shader.shaderProgram, "dirlightPos");

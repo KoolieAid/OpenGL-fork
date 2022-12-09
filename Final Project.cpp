@@ -241,7 +241,7 @@ int main(void)
     float bassScale = 1.0f / 8.0f;
     float spadeFishScale = 1.0f / 512.0f;
     float whaleScale = 1.0f;
-    float submarineScale = 1.0 / 96.0f;
+    float seahorseScale = 1.0 / 96.0f;
 
     vector<Bass> basses;
     for (int i = 0; i < 12; i++) {
@@ -265,7 +265,7 @@ int main(void)
 
     Shark shark = Shark(vec3(-12.0f, 0.0f, 10.0f), vec3(sharkScale), vec3(0.0, 0.0f, 2.0f));
     Whale whale = Whale(vec3(20.0f, -20.0f, -10.0f), vec3(whaleScale), vec3(0.0f, 0.0f, 0.0f));
-    Submarine submarine = Submarine(vec3(10.0f, -10.0f, 10.0f), vec3(submarineScale), vec3(0.0f));
+    SeaHorse seaHorse = SeaHorse(vec3(3.0f, 0.0f, 0.0f), vec3(seahorseScale), vec3(90.0f, 180.0f, 0.0f));
     AngelFish angelFish = AngelFish(vec3(15.0f, -10.0f, 10.0f), vec3(angelFishScale), vec3(90.0f));
     angelFish.scale.z = 1.01f;
 
@@ -285,9 +285,9 @@ int main(void)
     GLuint WhaleVAO = setBuffers(whaleVertexData);
     whale.setAttribPointer();
 
-    vector<GLfloat> submarineVertexData = submarine.loadVertexData();
-    GLuint SubmarineVAO = setBuffers(submarineVertexData);
-    submarine.setAttribPointer();
+    vector<GLfloat> seahorseVertexData = seaHorse.loadVertexData();
+    GLuint SeaHorseVAO = setBuffers(seahorseVertexData);
+    seaHorse.setAttribPointer();
 
     vector<GLfloat> blueBettaVertexData = blueBettas[0].loadVertexData();
     GLuint BlueBettaVAO = setBuffers(blueBettaVertexData);
@@ -309,7 +309,7 @@ int main(void)
     int bassSize = bassVertexData.size();
     int sharkSize = sharkVertexData.size();
     int whaleSize = whaleVertexData.size();
-    int submarineSize = submarineVertexData.size();
+    int seaHorseSize = seahorseVertexData.size();
     int blueBettaSize = blueBettaVertexData.size();
     int spadeFishSize = spadeFishVertexData.size();
     int troutSize = troutVertexData.size();
@@ -325,7 +325,7 @@ int main(void)
     MyTextureMap bassTexMap = basses[0].loadTextures();
     MyTextureMap sharkTexMap = shark.loadTextures();
     MyTextureMap whaleTexMap = whale.loadTextures();
-    MyTextureMap submarineTexMap = submarine.loadTextures();
+    MyTextureMap seaHorseTexMap = seaHorse.loadTextures();
     MyTextureMap blueBettaTexMap = blueBettas[0].loadTextures();
     MyTextureMap spadeFishTexMap = spadeFishes[0].loadTextures();
     MyTextureMap troutTexMap = trouts[0].loadTextures();
@@ -404,15 +404,16 @@ int main(void)
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
+            whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
             whale.position.z = (whale.position.z > 100.0f) ? (-100.0f) : (whale.position.z + 0.40f);
 
             // Shark
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
             shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
-            // Submarine
-            submarine.draw(SMLitTexturedNormap, submarineSize, SubmarineVAO, submarineTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-            submarine.position.z = (submarine.position.z > 50.0f) ? (-50.0f) : (submarine.position.z + 0.5f);
+            // SeaHorse
+            seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
+            //seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.5f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
@@ -459,9 +460,9 @@ int main(void)
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
             shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
-            // Submarine
-            submarine.draw(SMLitTexturedNormap, submarineSize, SubmarineVAO, submarineTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
-            submarine.position.z = (submarine.position.z > 50.0f) ? (-50.0f) : (submarine.position.z + 0.5f);
+            // SeaHorse
+            seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
+            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.5f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
@@ -514,9 +515,9 @@ int main(void)
             shark.draw(SMLitTexturedNormap, sharkSize, SharkVAO, sharkTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
             shark.position.z = (shark.position.z > 50.0f) ? (-50.0f) : (shark.position.z + 0.15f);
 
-            // Submarine
-            submarine.draw(SMLitTexturedNormap, submarineSize, SubmarineVAO, submarineTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
-            submarine.position.z = (submarine.position.z > 50.0f) ? (-50.0f) : (submarine.position.z + 0.5f);
+            // SeaHorse
+            seaHorse.draw(SMLitTexturedNormap, seaHorseSize, SeaHorseVAO, seaHorseTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
+            seaHorse.position.z = (seaHorse.position.z > 50.0f) ? (-50.0f) : (seaHorse.position.z + 0.5f);
 
             // Spade Fish
             for (int i = 0; i < numSpadeFish; i++) {
