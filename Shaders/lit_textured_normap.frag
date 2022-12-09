@@ -36,7 +36,8 @@ void main() {
 
 	///// Direct Light /////
 	// Diffuse
-	float diff = max(dot(normal, dirlightDir), 0.0f);
+	float diffInt = 0.001f;
+	float diff = max(dot(normal, dirlightDir), 0.0f) * diffInt;
 	vec3 dirdiffuse = diff * dirlightColor;
 
 	// Ambient
