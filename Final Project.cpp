@@ -49,15 +49,16 @@ float screenHeight = 1080.0f;
 
 // Player Controls
 AngelFish* playerControl;
-vec3 modelFront = vec3(0.0f, 0.0f, 0.75f);
-float controlYaw = 90.0f;
+vec3 playerFront = vec3(0.0f, 0.0f, 1.0f);
+vec3 direction = vec3(0.0f);
+float controlYaw = -90.0f;
 
 // Camera Control Pointers
 OrthoCamera* orthoControl;
 PerspectiveCamera* POV3Control;
 PerspectiveCamera* POV1Control;
-float moveSpeed = 0.05f;
-float turnSpeed = 2.0f;
+float moveSpeed = 0.1f;
+float turnSpeed = 2.5f;
 
 // Setting
 int intensity_level = 2;  
@@ -68,15 +69,16 @@ void print(vec3 vector)
     cout << vector.x << "-" << vector.z << "-" << vector.z << "\n";
 }
 
+// Determines the Front of the Model when Moving
 void turn()
-{
-    vec3 direction;
-    direction.x = cos(PI * 2 * controlYaw / 360.0f);
-    direction.y = 0.0f;
-    direction.z = sin(PI * 2 * controlYaw / 360.0f);
-    modelFront = glm::normalize(direction);
+{ 
+    vec3 playerDirection;
 
-    //cout << "--------------------------------------\n";
+    playerDirection.x = cos(PI * 2 * controlYaw / 360.0f);
+    playerDirection.y = 0.0f;
+    playerDirection.z = sin(PI * 2 * controlYaw / 360.0f);
+
+    playerFront = glm::normalize(playerDirection);
 }
 
 // Key Callbacks [Controls?/Debugging] // // // // // // // // // // // // // // // // // // // // // // // // 
@@ -103,23 +105,17 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
     // Camera Movement
     if (isPOV3) {                                                       // 3rd Perspective
         switch (key) {
-            case GLFW_KEY_W: playerControl->position += modelFront * moveSpeed;
-                             POV3Control->position += modelFront * moveSpeed;
+            case GLFW_KEY_W: playerControl->position -= playerFront * moveSpeed;
                 break;
-            case GLFW_KEY_A: playerControl->rotation.y -= turnSpeed;
-                             cout << playerControl->rotation.y << "\n";
+            case GLFW_KEY_A: playerControl->rotation.y += turnSpeed;
                              controlYaw -= turnSpeed;
                              turn(); 
-                             POV3Control->position = playerControl->position - modelFront * 1.0f;
                 break;
-            case GLFW_KEY_S: playerControl->position -= modelFront * moveSpeed;
-                             POV3Control->position -= modelFront * moveSpeed;
+            case GLFW_KEY_S: playerControl->position += playerFront * moveSpeed;
                 break;
-            case GLFW_KEY_D: playerControl->rotation.y += turnSpeed; 
-                cout << playerControl->rotation.y << "\n";
-                             controlYaw += turnSpeed; 
+            case GLFW_KEY_D: playerControl->rotation.y -= turnSpeed;  
+                             controlYaw += turnSpeed;
                              turn();  
-                             POV3Control->position = playerControl->position - modelFront * 1.0f; 
                 break;
             case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
                              POV3Control->position.y += moveSpeed;
@@ -128,28 +124,34 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
                              POV3Control->position.y -= moveSpeed;
                 break;
         }
+        POV1Control->center = playerControl->position - playerFront * 2.0f;
+        POV1Control->position = playerControl->position;
+        POV3Control->position = playerControl->position + glm::normalize(-direction);
     }
     else if (isPOV1) {                                                  // 1st Perspective
         switch (key) {
-        case GLFW_KEY_W: playerControl->position.z += moveSpeed;
-                         POV1Control->center.z += moveSpeed;
-            break;
-        case GLFW_KEY_A: playerControl->position.x += moveSpeed;
-                         POV1Control->center.x += moveSpeed;
-            break;
-        case GLFW_KEY_S: playerControl->position.z -= moveSpeed;
-                         POV1Control->center.z -= moveSpeed;
-            break;
-        case GLFW_KEY_D: playerControl->position.x -= moveSpeed;
-                         POV1Control->center.x -= moveSpeed;
-            break;
-        case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
-                         POV1Control->center.y += moveSpeed;
-            break;
-        case GLFW_KEY_E: playerControl->position.y -= moveSpeed;
-                         POV1Control->center.y -= moveSpeed;
-            break;
+            case GLFW_KEY_W: playerControl->position -= playerFront * moveSpeed;
+                break;
+            case GLFW_KEY_A: playerControl->rotation.y += turnSpeed;
+                             controlYaw -= turnSpeed;
+                             turn();
+                break;
+            case GLFW_KEY_S: playerControl->position += playerFront * moveSpeed;
+                break;
+            case GLFW_KEY_D: playerControl->rotation.y -= turnSpeed;
+                             controlYaw += turnSpeed;
+                             turn();
+                break;
+            case GLFW_KEY_Q: playerControl->position.y += moveSpeed;
+                             POV1Control->center.y += moveSpeed;
+                break;
+            case GLFW_KEY_E: playerControl->position.y -= moveSpeed;
+                             POV1Control->center.y -= moveSpeed;
+                break;
         }
+        POV1Control->center = playerControl->position - playerFront * 2.0f;
+        POV1Control->position = playerControl->position;
+        POV3Control->position = playerControl->position + glm::normalize(-direction);
     }
     else {                                                              // Orthographic
         switch (key) {
@@ -201,12 +203,13 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
         if (cam_pitch < -89.0f)
             cam_pitch = -89.0f;
 
-        vec3 direction;
+        // Update Direction
         direction.x = cos(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
         direction.y = sin(glm::radians(cam_pitch));
         direction.z = sin(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
 
         POV3Control->center = glm::normalize(direction);
+        POV3Control->position = playerControl->position + glm::normalize(-direction);
     }
 }
 
@@ -283,7 +286,7 @@ int main(void)
     SkyBox skybox = SkyBox();
 
     // Player Model
-    AngelFish angelFish = AngelFish(vec3(0.0f, 0.0f, 0.0f), vec3(angelFishScale, angelFishScale, 1.01f), vec3(0.0f, -90.0f, 0.0f));
+    AngelFish angelFish = AngelFish(vec3(0.0f, 0.0f, 0.0f), vec3(angelFishScale, angelFishScale, angelFishScale), vec3(0.0f, controlYaw, 0.0f));
     playerControl = &angelFish;
 
 
@@ -362,6 +365,9 @@ int main(void)
 
     // Setup Camera (Temp Setup)
     cout << "> Loading Camera Data...\n";
+    
+    // Initial Player Direction
+    turn();
 
     // Orthographic Camera
     OrthoCamera orthoCam = OrthoCamera(vec3(1.0f, 4.0f, 1.0f), screenWidth, screenHeight);
@@ -369,13 +375,15 @@ int main(void)
     orthoControl = &orthoCam;
 
     // 3rd Person Perspective Camera
-    PerspectiveCamera POV3Cam = PerspectiveCamera(playerControl->position - modelFront, screenWidth, screenHeight);
+    PerspectiveCamera POV3Cam = PerspectiveCamera(playerControl->position - playerFront, screenWidth, screenHeight);
+    POV3Cam.zfar = 30.0f;
     POV3Cam.center = playerControl->position;
     POV3Control = &POV3Cam;
 
     // 1st Person Perspective Camera
-    PerspectiveCamera POV1Cam = PerspectiveCamera(vec3(playerControl->position), screenWidth, screenHeight);
-    POV1Cam.center = playerControl->position + modelFront;
+    PerspectiveCamera POV1Cam = PerspectiveCamera(playerControl->position, screenWidth, screenHeight);
+    POV1Cam.zfar = 80.0f;
+    POV1Cam.center = playerControl->position - playerFront * 2.0f;
     POV1Control = &POV1Cam;
 
     // Setup Lighting
@@ -392,6 +400,7 @@ int main(void)
     int numTrout = trouts.size();
 
     // Others
+    
 
     cout << "> Drawing...\n";
     /* Loop until the user closes the window */
@@ -428,10 +437,7 @@ int main(void)
             }
 
             // Bass
-            //basses[0].position = POV3Cam.center;
-            basses[0].draw(SMLitTextured, bassSize, BassVAO, bassTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
-
-            for (int i = 1; i < numBass; i++) {
+            for (int i = 0; i < numBass; i++) {
                 basses[i].draw(SMLitTextured, bassSize, BassVAO, bassTexMap, POV3Cam.persProject(), POV3Cam.persViewPOV3(), directional_light, point_light);
                 basses[i].position.z = fmod(basses[i].position.z, 20.0f) + ((i + 1) % 10 / 100.0f);
             }
@@ -461,7 +467,7 @@ int main(void)
             // Skybox
             skybox.draw(SMSkyBox, skyboxTex, orthoCam.orthoProjectSkybox(), orthoCam.orthoView());
 
-            // Angel fish = player
+            // AngelFish (Player)
             angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, orthoCam.orthoProject(), orthoCam.orthoView(), directional_light, point_light);
 
             // Whale
@@ -513,11 +519,8 @@ int main(void)
             // Skybox
             skybox.draw(SMSkyBox, skyboxTex, POV1Cam.persProject(), POV1Cam.persViewPOV1());
 
-            // Update camera position in 1st POV
-            POV1Cam.position = vec3(angelFish.position.x, angelFish.position.y, angelFish.position.z + 1.0f);
-
-            // Angel fish = player
-            angelFish.draw(SMLitTextured, angelFishSize, AngelFishVAO, angelFishTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
+            // AngelFish (Player)
+            // There is no need to draw the Player in POV1
 
             // Whale
             whale.draw(SMLitTexturedNormap, whaleSize, WhaleVAO, whaleTexMap, POV1Cam.persProject(), POV1Cam.persViewPOV1(), directional_light, point_light);
@@ -562,8 +565,6 @@ int main(void)
             case 2: point_light.intensity = 1.0f; break;
             case 3: point_light.intensity = 3.0f; break;
         }
-
-        
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

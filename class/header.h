@@ -192,12 +192,14 @@ class OrthoCamera : public MyCamera
 class PerspectiveCamera : public MyCamera 
 {
 	public:
+		float zfar = 50.0f;
+
 		// Constructor
 		PerspectiveCamera(vec3 nposition, float nwidth, float nheight) : MyCamera(nposition, nwidth, nheight) {}
 
 		mat4 persProject()
 		{
-			return perspective(radians(60.0f), width / height, 0.01f, 50.0f);
+			return perspective(radians(60.0f), width / height, 0.01f, zfar);
 		}
 
 		mat4 persViewPOV3()
