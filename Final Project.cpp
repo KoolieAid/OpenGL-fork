@@ -350,7 +350,6 @@ int main(void)
     MyTextureMap angelFishTexMap = angelFish.loadTextures();
 
     cout << "> Loading SkyBox Texture Data...\n";
-
     GLuint skyboxTex = skybox.loadTextures();
 
 
@@ -397,8 +396,6 @@ int main(void)
     int numSpadeFish = spadeFishes.size();
     int numTrout = trouts.size();
 
-    // Others
-    
 
     cout << "> Drawing...\n";
     /* Loop until the user closes the window */
