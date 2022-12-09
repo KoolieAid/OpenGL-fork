@@ -238,13 +238,13 @@ class MyLight
 	*/
 
 public:
-	vec3 light_pos = vec3(0.0f, -10.0f, 0.0f);
+	vec3 light_pos = vec3(0.0f, 0.0f, 0.0f);
 	vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
 
 	float ambient_str = 0.2f;
 	float spec_str = 5.0f;
 	float spec_phong = 16.0f;
-	float intensity = 0.2f;
+	float intensity = 1.0f;
 
 	// Constructor
 	MyLight(vec3 nposition, vec3 ncolor, float nintensity) {
