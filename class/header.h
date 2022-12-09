@@ -165,21 +165,6 @@ public:
 	{
 		return lookAt(position, center, up);
 	}
-
-	/*
-		The game should feature the following Camera�s
-		- 3rd Person Perspective Camera on the Player�s ship
-		- The view can be controlled by using the mouse, You cannot see as far in this view
-		- First Person Perspective Camera, You can see much further in this view, Cannot be controlled by the mouse
-		- You can only see objects in a single shade of color in this view (Similar to Sonar)
-
-		Orthographic Top / Birds-eye View Camera overlooking the whole area by default
-		- You cannot move the ship in this view
-		- You can pan the camera around using WASD
-
-		- You can swap 1st / 3rd Person Views using the number 1 key.
-		- You can enter Top / Birds-eye view using the number 2 key.
-	*/
 };
 
 // Ortho Camera class that inherits from the camera base class
@@ -207,12 +192,14 @@ class OrthoCamera : public MyCamera
 class PerspectiveCamera : public MyCamera 
 {
 	public:
+		float zfar = 50.0f;
+
 		// Constructor
 		PerspectiveCamera(vec3 nposition, float nwidth, float nheight) : MyCamera(nposition, nwidth, nheight) {}
 
 		mat4 persProject()
 		{
-			return perspective(radians(60.0f), width / height, 0.01f, 50.0f);
+			return perspective(radians(60.0f), width / height, 0.01f, zfar);
 		}
 
 		mat4 persViewPOV3()
@@ -319,7 +306,6 @@ public:
 		cout << "Draw function is not defined!";
 	}
 
-protected:
 	// Create Transformation Matrix
 	mat4 transform()
 	{
@@ -1666,7 +1652,6 @@ public:
 			if (data) {
 
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-				cout << w << "-" << h << "\n";
 				stbi_image_free(data);
 			}
 		}
