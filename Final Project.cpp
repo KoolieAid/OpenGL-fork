@@ -415,7 +415,7 @@ int main(void)
     cout << "> Loading Lighting Data...\n";
 
     vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
-    DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 50.0f, 0.0f), light_color, 1.0f);
+    DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 100.0f, 0.0f), light_color, 1.0f);
     PointLight point_light = PointLight(vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z), light_color, 1.0f);
 
     // For Loops Counters
@@ -431,6 +431,8 @@ int main(void)
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        point_light.light_pos = vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z), light_color, 1.0f;
 
         // 3rd POV - perspective camera -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if (isPOV3) {
