@@ -410,7 +410,7 @@ int main(void)
 
     // Orthographic Camera
     OrthoCamera orthoCam = OrthoCamera(vec3(5.0f, 4.0f, 5.0f), screenWidth, screenHeight);
-    orthoCam.center = vec3(0.5f, 0.0f, 0.5f);
+    orthoCam.center = vec3(4.5f, 0.0f, 4.5f);
     orthoControl = &orthoCam;
 
     // 3rd Person Perspective Camera
