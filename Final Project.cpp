@@ -172,32 +172,30 @@ void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
 void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
     // Perspective Controls
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) != GLFW_RELEASE) {
-        if (isPOV3) {
-            float xoffset = xpos - lastX;
-            float yoffset = lastY - ypos;
-            lastX = xpos;
-            lastY = ypos;
+    if (isPOV3) {
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+        lastX = xpos;
+        lastY = ypos;
 
-            float sensitivity = 0.1f;
-            xoffset *= sensitivity;
-            yoffset *= sensitivity;
+        float sensitivity = 0.1f;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
 
-            cam_yaw += xoffset;
-            cam_pitch += yoffset;
+        cam_yaw += xoffset;
+        cam_pitch += yoffset;
 
-            if (cam_pitch > 89.0f)
-                cam_pitch = 89.0f;
-            if (cam_pitch < -89.0f)
-                cam_pitch = -89.0f;
+        if (cam_pitch > 89.0f)
+            cam_pitch = 89.0f;
+        if (cam_pitch < -89.0f)
+            cam_pitch = -89.0f;
 
-            vec3 direction;
-            direction.x = cos(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
-            direction.y = sin(glm::radians(cam_pitch));
-            direction.z = sin(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
+        vec3 direction;
+        direction.x = cos(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
+        direction.y = sin(glm::radians(cam_pitch));
+        direction.z = sin(glm::radians(cam_yaw)) * cos(glm::radians(cam_pitch));
 
-            POV3Control->center = glm::normalize(direction);
-        }
+        POV3Control->center = glm::normalize(direction);
     }
 }
 
