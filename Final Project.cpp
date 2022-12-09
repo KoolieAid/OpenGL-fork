@@ -362,7 +362,7 @@ int main(void)
 
     vec3 light_color = vec3(1.0f, 1.0f, 1.0f);
     DirectionalLight directional_light = DirectionalLight(vec3(0.0f, 50.0f, 0.0f), light_color, 1.0f);
-    PointLight point_light = PointLight(vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z + 1.0f), light_color, 1.0f);
+    PointLight point_light = PointLight(vec3(angelFish.position.x, angelFish.position.y + 1.0f, angelFish.position.z), light_color, 1.0f);
 
     // For Loops Counters
     int numBass = basses.size();
@@ -545,9 +545,9 @@ int main(void)
         
         // Light Intensity
         switch (intensity_level) {
-            case 1: point_light.intensity = 0.5f; break;
-            case 2: point_light.intensity = 1.0f; break;
-            case 3: point_light.intensity = 3.0f; break;
+            case 1: point_light.intensity = 1.0f; break;
+            case 2: point_light.intensity = 3.0f; break;
+            case 3: point_light.intensity = 6.0f; break;
         }
 
 
